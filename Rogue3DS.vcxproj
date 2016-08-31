@@ -60,24 +60,23 @@ D:\3DS\Citra\citra-qt.exe $(ProjectDir)$(ProjectName).3dsx</NMakeBuildCommandLin
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\core.cpp" />
-    <ClCompile Include="source\entityList.cpp" />
     <ClCompile Include="source\gameCore.cpp" />
     <ClCompile Include="source\gameMap.cpp" />
-    <ClCompile Include="source\graphics.cpp" />
+    <ClCompile Include="source\graphicsSystem.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\physics.cpp" />
+    <ClCompile Include="source\physicsSystem.cpp" />
     <ClCompile Include="source\SimplexNoise.cpp" />
     <ClCompile Include="source\sound.cpp" />
     <ClCompile Include="source\stb_vorbis.c" />
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\components.h" />
     <ClInclude Include="source\core.h" />
-    <ClInclude Include="source\entityList.h" />
     <ClInclude Include="source\gameCore.h" />
     <ClInclude Include="source\gameMap.h" />
-    <ClInclude Include="source\graphics.h" />
-    <ClInclude Include="source\physics.h" />
+    <ClInclude Include="source\graphicsSystem.h" />
+    <ClInclude Include="source\physicsSystem.h" />
     <ClInclude Include="source\resource.h" />
     <ClInclude Include="source\SimplexNoise.h" />
     <ClInclude Include="source\sound.h" />

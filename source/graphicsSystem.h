@@ -4,11 +4,14 @@
 #include "core.h"
 #include "UI.h"
 #include "sftd.h"
+#include "entityx.h"
 
-class graphics
+namespace ex = entityx;
+
+class graphicsSystem : public ex::System<graphicsSystem>
 {
 private:
-	entity* player;
+	point3D* playerPos;
 	gameMap* mapObj;
 	textureName texTable[TEX_TABLE_SIZE];
 	bool isTextureLoaded(string textureFile) const;
@@ -19,15 +22,15 @@ private:
 	void cameraUpdate();
 	sf2d_texture* getTexture(point3D p, mode mode_t = PRRT) const;
 	sf2d_texture* arrowTexture;
-
+	sftd_font* font;
 	point3D cameraPos;
 public:
-	graphics();
-	graphics(gameMap &map, entity &playerOrig);
-	void edit(gameMap &map, entity &playerOrig);
+	explicit graphicsSystem(gameMap* map, point3D* pos);
+	~graphicsSystem();
 
+	void update(entityx::EntityManager &es, entityx::EventManager &events, entityx::TimeDelta dt) override;
 	void freeAllTextures();
-	void drawFrame(sftd_font* font);
+	void drawFrame(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt);
 	void reloadTextures();
 
 };

@@ -2,38 +2,34 @@
 #include <sf2d.h>
 #include <sfil.h>
 #include "gameMap.h"
-#include "graphics.h"
+#include "graphicsSystem.h"
 #include <sftd.h>
+#include "FreeSans_ttf.h"
+#include "entityx.h"
+#include "components.h"
 
 using namespace std;
 
-graphics::graphics() {
-	loadTexture("player.png");
+graphicsSystem::graphicsSystem(gameMap* map, point3D* pos): playerPos(pos), mapObj(map), cameraPos(*pos)
+{
 	arrowTexture = sfil_load_PNG_file("data/sprites/arrow.png", SF2D_PLACE_RAM);
+	font = sftd_load_font_mem(FreeSans_ttf, FreeSans_ttf_size);
+	reloadTextures();
 }
 
-graphics::graphics(gameMap &map, entity &playerOrig) {
-	loadTexture("player.png");
-	arrowTexture = sfil_load_PNG_file("data/sprites/arrow.png", SF2D_PLACE_RAM);
-	mapObj = &map;
-	player = &playerOrig;
-	cameraPos = player->pos;
+graphicsSystem::~graphicsSystem()
+{
+	sftd_free_font(font);
+	freeAllTextures();
 }
 
-void graphics::edit(gameMap &map, entity &playerOrig) {
-	mapObj = &map;
-	player = &playerOrig;
-	cameraPos = player->pos;
+void graphicsSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
+{
+	drawFrame(es,events,dt);
 }
 
-void graphics::drawFrame(sftd_font* font) {
+void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) {
 	cameraUpdate();
-	sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
-	sftd_draw_textf(font, 0, 0, RGBA8(255, 255, 255, 255), 10, "%i", mapObj->entityList->pos.x);
-	sftd_draw_textf(font, 0, 10, RGBA8(255, 255, 255, 255), 10, "%i", mapObj->entityList->pos.y);
-	sftd_draw_textf(font, 0, 20, RGBA8(255, 255, 255, 255), 10, "%i", mapObj->entityList->pos.z);
-
-	sf2d_end_frame();
 	sf2d_start_frame(GFX_TOP, GFX_LEFT);
 	point3D p;
 	for (int i = 0; i != 15; i++) {
@@ -42,8 +38,9 @@ void graphics::drawFrame(sftd_font* font) {
 				p.x = (cameraPos.x + j) - 12;
 				p.y = (cameraPos.y + i) - 7;
 				p.z = (cameraPos.z - y);
-				if (p.x >= 0 && p.y >= 0 && p.z >= 0 && mapObj->isVisible(p, PRRT)) {
-					sf2d_draw_texture(getTexture(p, PRRT), j * 16, i * 16);
+				//cout << "X " << p.x << " Y " << p.y << " Z " << p.z << endl;
+				if (p.x >= 0 && p.y >= 0 && p.z >= 0 && mapObj->isVisible(p)) {
+					sf2d_draw_texture(getTexture(p, TRRN), j * 16, i * 16);
 					if (y > 1) sf2d_draw_texture_rotate(arrowTexture, j * 16 + 8, i * 16 + 8, PI);
 					else if (y == 0) sf2d_draw_texture(arrowTexture, j * 16, i * 16);
 				}
@@ -55,7 +52,7 @@ void graphics::drawFrame(sftd_font* font) {
 	sf2d_swapbuffers();
 }
 
-bool graphics::isTextureLoaded(string textureFile) const
+bool graphicsSystem::isTextureLoaded(string textureFile) const
 { // tells if a texture with said name is present on texTable
 	for (int i = 0; i < TEX_TABLE_SIZE && texTable[i].name != ""; i++) {
 		if (texTable[i].name == textureFile) {
@@ -64,7 +61,7 @@ bool graphics::isTextureLoaded(string textureFile) const
 	}
 	return false;
 }
-int graphics::freeTexturePos() const
+int graphicsSystem::freeTexturePos() const
 { //returns the position inside texTable[] of the first free texture space
 	for (int i = 0; i < TEX_TABLE_SIZE; i++) {
 		if (texTable[i].name == "") {
@@ -74,7 +71,7 @@ int graphics::freeTexturePos() const
 	//cout<< "NO FREE SPACE IN TEXTABLE" << endl;
 	return -1;
 }
-int graphics::getTexturePos(string fileName) const
+int graphicsSystem::getTexturePos(string fileName) const
 { //returns the position inside texTable[] of the texture with said filename
 	for (int i = 0; i < TEX_TABLE_SIZE && texTable[i].name != ""; i++) {
 		if (texTable[i].name == fileName) {
@@ -84,7 +81,7 @@ int graphics::getTexturePos(string fileName) const
 	//cout<< "NO TEXTURE W/ FNAME " << fileName << " FOUND" << endl;
 	return -1;
 }
-void graphics::loadTexture(string fileName) { //load a texture from a file into the first free space inside texTable[]
+void graphicsSystem::loadTexture(string fileName) { //load a texture from a file into the first free space inside texTable[]
 	int freeTextureLoc = freeTexturePos();
 	texTable[freeTextureLoc].name = fileName;
 	fileName = "data/sprites/" + fileName;
@@ -92,7 +89,7 @@ void graphics::loadTexture(string fileName) { //load a texture from a file into 
 	sf2d_texture_tile32(texTable[freeTextureLoc].texture);
 
 }
-void graphics::freeTexture(string fileName) { //frees a texture from texTable[]
+void graphicsSystem::freeTexture(string fileName) { //frees a texture from texTable[]
 	int textureLocation = getTexturePos(fileName);
 	int freeTexLoc = freeTexturePos();
 	textureName temp = texTable[textureLocation];
@@ -103,7 +100,7 @@ void graphics::freeTexture(string fileName) { //frees a texture from texTable[]
 	sf2d_free_texture(texTable[freeTexLoc - 1].texture);
 
 }
-void graphics::freeAllTextures() {	 //frees all textures
+void graphicsSystem::freeAllTextures() {	 //frees all textures
 	for (int i = 0; i < TEX_TABLE_SIZE; i++) {
 		if (texTable[i].name != "") {
 			texTable[i].name = "";
@@ -113,16 +110,16 @@ void graphics::freeAllTextures() {	 //frees all textures
 }
 
 
-void graphics::cameraUpdate()
+void graphicsSystem::cameraUpdate()
 {
-	if (cameraPos.x - 5 < player->pos.x) { cameraPos.x++; }
-	if (cameraPos.x + 4 > player->pos.x) { cameraPos.x--; }
-	if (cameraPos.y - 4 < player->pos.y) { cameraPos.y++; }
-	if (cameraPos.y + 3 > player->pos.y) { cameraPos.y--; }
-	cameraPos.z = player->pos.z;
+	if (cameraPos.x - 5 < playerPos->x) { cameraPos.x++; }
+	if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
+	if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
+	if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
+	cout << playerPos->x << endl;
 }
 
-sf2d_texture* graphics::getTexture(point3D p, mode mode_t) const
+sf2d_texture* graphicsSystem::getTexture(point3D p, mode mode_t) const
 {
 
 	point3D b;
@@ -136,30 +133,7 @@ sf2d_texture* graphics::getTexture(point3D p, mode mode_t) const
 		if (chunkPosition == -1) {
 			getTexture(p, NTT);
 		}
-		if (mapObj->isVisible(p, TRRN)) {
-			return texTable[getTexturePos(mapObj->getTerrainName(p))].texture;
-		}
-		break;
-	case NTT:
-		for (int i = 0; i < ENTITY_LIST_SIZE && mapObj->entityList[i].pos.x != -1; i++) {
-			if (mapObj->getEntityName(p) == texTable[i].name) {
-				return texTable[i].texture;
-			}
-		}
-		break;
-		//cout<< "Entity texture not found in position" << posX << ' ' << posY << ' ' << posZ << endl;
-	case PRRT:
-		if (chunkPosition == -1) {
-			getTexture(p, NTT);
-		}
-		if (mapObj->isVisible(p, NTT) == 1) {
-			for (int i = 0; i < ENTITY_LIST_SIZE && mapObj->entityList[i].pos.x != -1; i++) {
-				if (mapObj->getEntityName(p) == texTable[i].name) {
-					return texTable[i].texture;
-				}
-			}
-		}
-		else if (mapObj->isVisible(p, TRRN)) {
+		if (mapObj->isVisible(p)) {
 			return texTable[getTexturePos(mapObj->getTerrainName(p))].texture;
 		}
 		break;
@@ -169,11 +143,10 @@ sf2d_texture* graphics::getTexture(point3D p, mode mode_t) const
 	return nullptr;
 }
 
-void graphics::reloadTextures() {
+void graphicsSystem::reloadTextures() {
 	for (int i = 0; i < mapObj->getTerrainListSize(); i++) {
 		if (mapObj->isVisible(i)) {
 			loadTexture(mapObj->getTextureName(i));
 		}
 	}
-
 }

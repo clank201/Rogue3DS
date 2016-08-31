@@ -18,22 +18,13 @@
     <ClCompile Include="source\core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\entityList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\gameCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\gameMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\graphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\SimplexNoise.cpp">
@@ -48,24 +39,21 @@
     <ClCompile Include="source\stb_vorbis.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\graphicsSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physicsSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\entityList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\gameCore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\gameMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\graphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\resource.h">
@@ -81,6 +69,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\graphicsSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physicsSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

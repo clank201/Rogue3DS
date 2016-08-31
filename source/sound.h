@@ -21,6 +21,8 @@ public:
 	void playFromFile(string file);
 	void exit();
 private:
+	short assignChannel();
+	bool channelStatus[8];
 	bool exitRequest;
 	bool threadStatus;
 	static void audioMainThread(u32 arg);

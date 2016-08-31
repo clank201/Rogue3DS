@@ -12,6 +12,10 @@ using namespace std;
 
 sound::sound()
 {
+	for (int i = 0; i < 8; i++)
+	{
+		channelStatus[i] = false;
+	}
 	threadStatus = false;
 	exitRequest = false;
 	waveBuf = new ndspWaveBuf[2];
@@ -21,7 +25,7 @@ sound::sound()
 
 	ndspChnSetInterp(0, NDSP_INTERP_LINEAR);
 
-	ndspChnSetFormat(0, NDSP_FORMAT_STEREO_PCM16);		
+	ndspChnSetFormat(0, NDSP_FORMAT_STEREO_PCM16);
 }
 
 sound::~sound()
@@ -65,22 +69,34 @@ void sound::playFromFile(string file)
 
 	ndspChnWaveBufAdd(0, &waveBuf[0]);
 	ndspChnWaveBufAdd(0, &waveBuf[1]);
-	threadCreate((ThreadFunc)audioMainThread,this, 5900, 0x30, 0, true);
+	threadCreate((ThreadFunc)audioMainThread, this, 5900, 0x30, 0, true);
 }
 
 void sound::exit()
 {
 	exitRequest = true;
-	while(threadStatus==true)
+	while (threadStatus == true)
 	{
 		svcSleepThread(10000000);
 	}
 	delete[] waveBuf;
 }
 
+short sound::assignChannel()
+{
+	for(int i = 0;i<8;i++)
+	{
+		if(channelStatus[i]==false)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 void sound::audioMainThread(u32 arg)
 {
-	sound* soundObj = (sound*)arg; 
+	sound* soundObj = (sound*)arg;
 	soundObj->threadStatus = true;
 	int samplesLeft = 1;
 	while (samplesLeft && !soundObj->exitRequest) {
