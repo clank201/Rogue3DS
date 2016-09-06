@@ -5,7 +5,7 @@
 #include "sound.h"
 #include "gameMap.h"
 #include <sftd.h>
-#include "entityx.h"
+#include "entityx/entityx.h"
 
 namespace ex = entityx;
 

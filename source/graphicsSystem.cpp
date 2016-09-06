@@ -5,7 +5,7 @@
 #include "graphicsSystem.h"
 #include <sftd.h>
 #include "FreeSans_ttf.h"
-#include "entityx.h"
+#include "entityx/entityx.h"
 #include "components.h"
 
 using namespace std;
@@ -116,7 +116,6 @@ void graphicsSystem::cameraUpdate()
 	if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
 	if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
 	if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
-	cout << playerPos->x << endl;
 }
 
 sf2d_texture* graphicsSystem::getTexture(point3D p, mode mode_t) const

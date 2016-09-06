@@ -8,6 +8,7 @@
 #include <sfil.h>
 #include <stdlib.h> 
 #include "core.h"
+#include "entityx/entityx.h"
 
 using namespace std;
 

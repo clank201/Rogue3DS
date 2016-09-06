@@ -337,7 +337,7 @@ bool gameMap::isVisible(point3D p) const
 	if (chunkPosition == -1) {
 		return false;
 	}
-	cout << chunkPosition;
+	//cout << chunkPosition;
 	return terrainList[terrainMap[chunkPosition][p.x - b.x * CHUNK_SIZE][p.y - b.y * CHUNK_SIZE][p.z - b.z * CHUNK_SIZE]].visible;
 }
 int gameMap::getTerrainListSize() const

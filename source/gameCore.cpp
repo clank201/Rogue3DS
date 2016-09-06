@@ -7,8 +7,11 @@
 #include "sf2d.h"
 #include "sfil.h"
 #include "sftd.h"
-#include "entityx.h"
+#include "entityx/entityx.h"
 #include "FreeSans_ttf.h"
+#include "inputSystem.h"
+#include "physicsSystem.h"
+#include "components.h"
 
 using namespace std;
 namespace ex = entityx;
@@ -19,6 +22,7 @@ void gameCore::gameLoop()
 	kDown = kDown | hidKeysDown();
 	kHeld = kHeld | hidKeysHeld();
 	kUp = kUp | hidKeysUp();
+	
 	if (tick % 12 == 0) {
 
 		EntityWorld->systems.update_all(0);
@@ -27,7 +31,9 @@ void gameCore::gameLoop()
 		kUp = hidKeysUp();
 	}
 	else  gspWaitForVBlank();
-
+	if (kDown & KEY_START) {
+		exitBool = true;
+	}
 	//cout<< player->posX << ' ' << player->posY << ' ' << player->posZ << endl;
 
 
@@ -78,9 +84,16 @@ void gameCore::gameLaunch()
 		map->loadNewChunk();
 	}
 	map->loadTerrainTable();
+	EntityWorld->systems.add<inputSystem>(&kDown,&kUp,&kHeld,playerPos);
+	EntityWorld->systems.add<physicsSystem>();
 	EntityWorld->systems.add<graphicsSystem>(map, playerPos);
 	EntityWorld->systems.configure();
-	soundObj.playFromFile("data/sounds/bgm/wilderness.ogg");
+	entityx::Entity test = EntityWorld->entities.create();
+	test.assign<Position>(*playerPos);
+	test.assign<Velocity>(point3D());
+	test.assign<Player>(playerPos);
+
+	//soundObj.playFromFile("data/sounds/bgm/wilderness.ogg");
 	map->startChunkLoader(playerPos);
 	tick = 0;
 	while (aptMainLoop() && !exitBool) {
@@ -90,14 +103,12 @@ void gameCore::gameLaunch()
 
 	string generalFile = "saves/" + saveName + "/general.txt";
 	std::remove(generalFile.c_str());
+	
 	ofstream generalO(generalFile);
 	generalO << playerName << endl << playerPos->x << endl << playerPos->y << endl << playerPos->z << endl;
 	generalO.close();
-
 	map->exit();
 	soundObj.exit();
-
-
 }
 
 void gameCore::createSavefile(string saveName)
@@ -138,15 +149,22 @@ gameCore::gameCore()
 
 gameCore::~gameCore()
 {
-	delete map;
-	delete EntityWorld;
-	delete playerPos;
 }
 
 void gameCore::exit()
 {
+	cout << "coreexit" << endl;
+	svcSleepThread(1000000000);
 	delete map;
+	cout << "coreexitMap" << endl;
+	svcSleepThread(1000000000);
 	delete EntityWorld;
+
+	cout << "coreexitWol" << endl;
+	svcSleepThread(1000000000);
+	delete playerPos;
+	cout << "coreexitEnd" << endl;
+	svcSleepThread(1000000000);
 }
 
 void gameCore::gameMenu()

@@ -6,6 +6,7 @@
 
 #include <time.h>
 #include <iomanip>
+#include <iostream>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ int main()
 	ndspInit();
 	sf2d_init();
 	sftd_init();
-	consoleInit(GFX_BOTTOM,NULL);
+	consoleInit(GFX_BOTTOM, nullptr);
 	sf2d_set_clear_color(RGBA8(0x00, 0x00, 0x00, 0xFF));
 	srand(time(NULL));
 	gameCore gameCore1;

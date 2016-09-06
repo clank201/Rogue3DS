@@ -52,9 +52,10 @@ D:\3DS\Citra\citra-qt.exe $(ProjectDir)$(ProjectName).3dsx</NMakeBuildCommandLin
     <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>make</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <IncludePath>D:\devkitPro\devkitARM\arm-none-eabi\include;D:\3DS\CTRhomebrew\Rogue3DS\source;D:\devkitPro\libctru\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\3DS\CTRhomebrew\Rogue3DS\include\entityx;D:\devkitPro\devkitARM\arm-none-eabi\include;D:\3DS\CTRhomebrew\Rogue3DS\include;D:\devkitPro\libctru\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\devkitPro\devkitARM\arm-none-eabi\lib;D:\devkitPro\libctru\lib;$(LibraryPath)</LibraryPath>
     <ReferencePath>D:\devkitPro\devkitARM\arm-none-eabi\lib;$(ReferencePath)</ReferencePath>
+    <SourcePath>D:\3DS\CTRhomebrew\Rogue3DS\include;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
@@ -63,6 +64,7 @@ D:\3DS\Citra\citra-qt.exe $(ProjectDir)$(ProjectName).3dsx</NMakeBuildCommandLin
     <ClCompile Include="source\gameCore.cpp" />
     <ClCompile Include="source\gameMap.cpp" />
     <ClCompile Include="source\graphicsSystem.cpp" />
+    <ClCompile Include="source\inputSystem.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\physicsSystem.cpp" />
     <ClCompile Include="source\SimplexNoise.cpp" />
@@ -71,22 +73,23 @@ D:\3DS\Citra\citra-qt.exe $(ProjectDir)$(ProjectName).3dsx</NMakeBuildCommandLin
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\components.h" />
-    <ClInclude Include="source\core.h" />
-    <ClInclude Include="source\gameCore.h" />
-    <ClInclude Include="source\gameMap.h" />
-    <ClInclude Include="source\graphicsSystem.h" />
-    <ClInclude Include="source\physicsSystem.h" />
-    <ClInclude Include="source\resource.h" />
-    <ClInclude Include="source\SimplexNoise.h" />
-    <ClInclude Include="source\sound.h" />
-    <ClInclude Include="source\stb_vorbis.h" />
-    <ClInclude Include="source\UI.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="resources\banner.bin" />
     <None Include="resources\icon.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\components.h" />
+    <ClInclude Include="include\core.h" />
+    <ClInclude Include="include\gameCore.h" />
+    <ClInclude Include="include\gameMap.h" />
+    <ClInclude Include="include\graphicsSystem.h" />
+    <ClInclude Include="include\inputSystem.h" />
+    <ClInclude Include="include\physicsSystem.h" />
+    <ClInclude Include="include\resource.h" />
+    <ClInclude Include="include\SimplexNoise.h" />
+    <ClInclude Include="include\sound.h" />
+    <ClInclude Include="include\stb_vorbis.h" />
+    <ClInclude Include="include\UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

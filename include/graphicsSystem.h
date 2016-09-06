@@ -4,7 +4,7 @@
 #include "core.h"
 #include "UI.h"
 #include "sftd.h"
-#include "entityx.h"
+#include "entityx/entityx.h"
 
 namespace ex = entityx;
 
