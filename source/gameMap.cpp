@@ -1,6 +1,6 @@
-#include "gameMap.h"
-#include "core.h"
-#include "SimplexNoise.h"
+#include "../include/gameMap.h"
+#include "../include/core.h"
+#include "../include/SimplexNoise.h"
 
 using namespace std;
 
@@ -133,6 +133,15 @@ int gameMap::getBlocksChunkID(point3D b) const
 		}
 	}
 	return -1;
+}
+
+terrain gameMap::getTerrain(point3D pos)
+{
+	point3D chunk = getChunk(pos);
+	if (!isChunkLoaded(pos))
+	{
+	}
+	return terrainList[terrainMap[getChunkID(chunk)][pos.x % CHUNK_SIZE][pos.y % CHUNK_SIZE][pos.z % CHUNK_SIZE]];
 }
 
 void gameMap::addPlayer(point3D* pos)

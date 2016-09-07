@@ -1,7 +1,7 @@
 #include "3ds.h"
 #include "sf2d.h"
 #include "3ds/thread.h"
-#include "gameCore.h"
+#include "../include/gameCore.h"
 #include "sftd.h"
 
 #include <time.h>
@@ -20,7 +20,7 @@ int main()
 	sftd_init();
 	consoleInit(GFX_BOTTOM, nullptr);
 	sf2d_set_clear_color(RGBA8(0x00, 0x00, 0x00, 0xFF));
-	srand(time(NULL));
+	srand(time(nullptr));
 	gameCore gameCore1;
 	gameCore1.gameMenu();
 	gameCore1.exit();

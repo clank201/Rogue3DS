@@ -2,8 +2,8 @@
 #include <3ds.h>
 #include <iostream>
 #include <stdio.h>
-#include "sound.h"
-#include "stb_vorbis.h"
+#include "../include/sound.h"
+#include "../include/stb_vorbis.h"
 
 
 using namespace std;

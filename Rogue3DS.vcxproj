@@ -66,7 +66,7 @@ D:\3DS\Citra\citra-qt.exe $(ProjectDir)$(ProjectName).3dsx</NMakeBuildCommandLin
     <ClCompile Include="source\graphicsSystem.cpp" />
     <ClCompile Include="source\inputSystem.cpp" />
     <ClCompile Include="source\main.cpp" />
-    <ClCompile Include="source\physicsSystem.cpp" />
+    <ClCompile Include="source\movementSystem.cpp" />
     <ClCompile Include="source\SimplexNoise.cpp" />
     <ClCompile Include="source\sound.cpp" />
     <ClCompile Include="source\stb_vorbis.c" />
@@ -84,7 +84,7 @@ D:\3DS\Citra\citra-qt.exe $(ProjectDir)$(ProjectName).3dsx</NMakeBuildCommandLin
     <ClInclude Include="include\gameMap.h" />
     <ClInclude Include="include\graphicsSystem.h" />
     <ClInclude Include="include\inputSystem.h" />
-    <ClInclude Include="include\physicsSystem.h" />
+    <ClInclude Include="include\movementSystem.h" />
     <ClInclude Include="include\resource.h" />
     <ClInclude Include="include\SimplexNoise.h" />
     <ClInclude Include="include\sound.h" />

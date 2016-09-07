@@ -1,17 +1,17 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "gameCore.h"
-#include "core.h"
+#include "../include/core.h"
 #include "3ds.h"
 #include "sf2d.h"
 #include "sfil.h"
 #include "sftd.h"
-#include "entityx/entityx.h"
-#include "FreeSans_ttf.h"
-#include "inputSystem.h"
-#include "physicsSystem.h"
-#include "components.h"
+#include "../include/entityx/entityx.h"
+#include "../build/FreeSans_ttf.h"
+#include "../include/inputSystem.h"
+#include "../include/movementSystem.h"
+#include "../include/components.h"
+#include "../include/gameCore.h"
 
 using namespace std;
 namespace ex = entityx;
@@ -84,13 +84,17 @@ void gameCore::gameLaunch()
 		map->loadNewChunk();
 	}
 	map->loadTerrainTable();
-	EntityWorld->systems.add<inputSystem>(&kDown,&kUp,&kHeld,playerPos);
-	EntityWorld->systems.add<physicsSystem>();
+	EntityWorld->systems.add<inputSystem>(&kDown,&kUp,&kHeld);
+	EntityWorld->systems.add<movementSystem>(map);
 	EntityWorld->systems.add<graphicsSystem>(map, playerPos);
 	EntityWorld->systems.configure();
 	entityx::Entity test = EntityWorld->entities.create();
 	test.assign<Position>(*playerPos);
-	test.assign<Velocity>(point3D());
+	point3D caca;
+	caca.x++;
+	caca.y++;
+	caca.z++;
+	test.assign<Velocity>(caca);
 	test.assign<Player>(playerPos);
 
 	//soundObj.playFromFile("data/sounds/bgm/wilderness.ogg");
@@ -108,7 +112,6 @@ void gameCore::gameLaunch()
 	generalO << playerName << endl << playerPos->x << endl << playerPos->y << endl << playerPos->z << endl;
 	generalO.close();
 	map->exit();
-	soundObj.exit();
 }
 
 void gameCore::createSavefile(string saveName)
@@ -153,18 +156,9 @@ gameCore::~gameCore()
 
 void gameCore::exit()
 {
-	cout << "coreexit" << endl;
-	svcSleepThread(1000000000);
 	delete map;
-	cout << "coreexitMap" << endl;
-	svcSleepThread(1000000000);
 	delete EntityWorld;
-
-	cout << "coreexitWol" << endl;
-	svcSleepThread(1000000000);
 	delete playerPos;
-	cout << "coreexitEnd" << endl;
-	svcSleepThread(1000000000);
 }
 
 void gameCore::gameMenu()

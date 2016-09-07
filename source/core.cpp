@@ -1,6 +1,6 @@
 #include <string>
 #include <sstream>
-#include "core.h"
+#include "../include/core.h"
 
 using namespace std;
 

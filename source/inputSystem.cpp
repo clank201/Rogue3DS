@@ -1,29 +1,33 @@
-#include "inputSystem.h"
-#include "components.h"
-#include "entityx/entityx.h"
+#include "../include/inputSystem.h"
+#include "../include/components.h"
+#include "../include/entityx/entityx.h"
 #include <3ds.h>
 
 
 void inputSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
 {
 	entityx::ComponentHandle<Velocity> velocity;
-	for (entityx::Entity entity : es.entities_with_components(velocity)){
+	entityx::ComponentHandle<Player> player;
+	for (entityx::Entity entity : es.entities_with_components(player,velocity)){
 		// Do things with entity, position and direction.
-		if ((*kHeld | *kDown) & KEY_DDOWN)
+		velocity->currentVelocity.y = 0;
+		velocity->currentVelocity.x = 0;
+
+		if (*kHeld & KEY_DOWN)
 		{
-			velocity->currentVelocity.y++;
+			velocity->currentVelocity.y=1;
 		}
-			if ((*kHeld | *kDown) & KEY_DUP)
+		if (*kHeld & KEY_UP)
 		{
-			velocity->currentVelocity.y--;
+			velocity->currentVelocity.y=-1;
 		}
-			if ((*kHeld | *kDown) & KEY_DLEFT)
+		if (*kHeld & KEY_LEFT)
 		{
-			velocity->currentVelocity.x--;
+			velocity->currentVelocity.x=-1;
 		}
-			if ((*kHeld | *kDown) & KEY_DRIGHT)
+		if (*kHeld & KEY_RIGHT)
 		{
-			velocity->currentVelocity.x++;
+			velocity->currentVelocity.x=1;
 		}
 	}
 }

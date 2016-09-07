@@ -45,6 +45,7 @@ private:
 	bool getEntitySolid(point3D p) const;
 	point3D* playerPos;
 public:
+	terrain getTerrain(point3D pos);
 	void addPlayer(point3D* pos);
 	bool isChunkLoaded(point3D p) const;
 	static point3D getChunk(point3D pos);

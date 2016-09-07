@@ -1,12 +1,12 @@
 #include <3ds.h>
 #include <sf2d.h>
 #include <sfil.h>
-#include "gameMap.h"
-#include "graphicsSystem.h"
+#include "../include/gameMap.h"
+#include "../include/graphicsSystem.h"
 #include <sftd.h>
-#include "FreeSans_ttf.h"
-#include "entityx/entityx.h"
-#include "components.h"
+#include "../build/FreeSans_ttf.h"
+#include "../include/entityx/entityx.h"
+#include "../include/components.h"
 
 using namespace std;
 
@@ -112,10 +112,11 @@ void graphicsSystem::freeAllTextures() {	 //frees all textures
 
 void graphicsSystem::cameraUpdate()
 {
-	if (cameraPos.x - 5 < playerPos->x) { cameraPos.x++; }
-	if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
-	if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
-	if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
+	//if (cameraPos.x - 5 < playerPos->x) { cameraPos.x++; }
+	//if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
+	//if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
+	//if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
+	cameraPos = *playerPos;
 }
 
 sf2d_texture* graphicsSystem::getTexture(point3D p, mode mode_t) const
