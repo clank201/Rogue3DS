@@ -1,25 +1,20 @@
-#include <3ds.h>
-#include <sf2d.h>
-#include <sfil.h>
 #include "../include/gameMap.h"
 #include "../include/graphicsSystem.h"
-#include <sftd.h>
-#include "../build/FreeSans_ttf.h"
 #include "../include/entityx/entityx.h"
 #include "../include/components.h"
+#include "../include/HardwareInterface.h"
 
 using namespace std;
 
 graphicsSystem::graphicsSystem(gameMap* map, point3D* pos): playerPos(pos), mapObj(map), cameraPos(*pos)
 {
-	arrowTexture = sfil_load_PNG_file("data/sprites/arrow.png", SF2D_PLACE_RAM);
-	font = sftd_load_font_mem(FreeSans_ttf, FreeSans_ttf_size);
+	entitiesTexture = HI::createTexture(512, 512);
+	arrowTexture = HI::loadPngFile("data/sprites/arrow.png");
 	reloadTextures();
 }
 
 graphicsSystem::~graphicsSystem()
 {
-	sftd_free_font(font);
 	freeAllTextures();
 }
 
@@ -30,7 +25,7 @@ void graphicsSystem::update(entityx::EntityManager& es, entityx::EventManager& e
 
 void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) {
 	cameraUpdate();
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
+	HI::startFrame(HI::SCREEN_TOP);
 	point3D p;
 	for (int i = 0; i != 15; i++) {
 		for (int j = 0; j != 25; j++) {
@@ -40,16 +35,16 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 				p.z = (cameraPos.z - y);
 				//cout << "X " << p.x << " Y " << p.y << " Z " << p.z << endl;
 				if (p.x >= 0 && p.y >= 0 && p.z >= 0 && mapObj->isVisible(p)) {
-					sf2d_draw_texture(getTexture(p, TRRN), j * 16, i * 16);
-					if (y > 1) sf2d_draw_texture_rotate(arrowTexture, j * 16 + 8, i * 16 + 8, PI);
-					else if (y == 0) sf2d_draw_texture(arrowTexture, j * 16, i * 16);
+					HI::drawTexture(getTexture(p, TRRN), j * 16, i * 16);
+					if (y > 1) HI::drawTextureRotate(arrowTexture, j * 16 + 8, i * 16 + 8, PI);
+					else if (y == 0) HI::drawTexture(arrowTexture, j * 16, i * 16);
 				}
 			}
 		}
 	}
-	sf2d_end_frame();
+	HI::endFrame();
 
-	sf2d_swapbuffers();
+	HI::swapBuffers();
 }
 
 bool graphicsSystem::isTextureLoaded(string textureFile) const
@@ -85,8 +80,7 @@ void graphicsSystem::loadTexture(string fileName) { //load a texture from a file
 	int freeTextureLoc = freeTexturePos();
 	texTable[freeTextureLoc].name = fileName;
 	fileName = "data/sprites/" + fileName;
-	texTable[freeTextureLoc].texture = sfil_load_PNG_file(fileName.c_str(), SF2D_PLACE_RAM);
-	sf2d_texture_tile32(texTable[freeTextureLoc].texture);
+	texTable[freeTextureLoc].texture = HI::loadPngFile(fileName.c_str());
 
 }
 void graphicsSystem::freeTexture(string fileName) { //frees a texture from texTable[]
@@ -97,14 +91,14 @@ void graphicsSystem::freeTexture(string fileName) { //frees a texture from texTa
 	texTable[freeTexLoc - 1] = temp;
 	texTable[freeTexLoc - 1].name = "";
 
-	sf2d_free_texture(texTable[freeTexLoc - 1].texture);
+	HI::freeTexture(texTable[freeTexLoc - 1].texture);
 
 }
 void graphicsSystem::freeAllTextures() {	 //frees all textures
 	for (int i = 0; i < TEX_TABLE_SIZE; i++) {
 		if (texTable[i].name != "") {
 			texTable[i].name = "";
-			sf2d_free_texture(texTable[i].texture);
+			HI::freeTexture(texTable[i].texture);
 		}
 	}
 }
@@ -112,14 +106,14 @@ void graphicsSystem::freeAllTextures() {	 //frees all textures
 
 void graphicsSystem::cameraUpdate()
 {
-	//if (cameraPos.x - 5 < playerPos->x) { cameraPos.x++; }
-	//if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
-	//if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
-	//if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
+	if (cameraPos.x - 5 < playerPos->x) { cameraPos.x++; }
+	if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
+	if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
+	if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
 	cameraPos = *playerPos;
 }
 
-sf2d_texture* graphicsSystem::getTexture(point3D p, mode mode_t) const
+HI::HITexture graphicsSystem::getTexture(point3D p, mode mode_t) const
 {
 
 	point3D b;

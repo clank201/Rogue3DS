@@ -2,12 +2,7 @@
 #include <string>
 #include <fstream>
 #include "../include/core.h"
-#include "3ds.h"
-#include "sf2d.h"
-#include "sfil.h"
-#include "sftd.h"
 #include "../include/entityx/entityx.h"
-#include "../build/FreeSans_ttf.h"
 #include "../include/inputSystem.h"
 #include "../include/movementSystem.h"
 #include "../include/components.h"
@@ -18,20 +13,19 @@ namespace ex = entityx;
 
 void gameCore::gameLoop()
 {
-	hidScanInput();
-	kDown = kDown | hidKeysDown();
-	kHeld = kHeld | hidKeysHeld();
-	kUp = kUp | hidKeysUp();
+	HI::updateHID();
+	kDown = kDown | HI::getKeysDown();
+	kHeld = kHeld | HI::getKeysHeld();
+	kUp = kUp | HI::getKeysUp();
 	
 	if (tick % 12 == 0) {
-
 		EntityWorld->systems.update_all(0);
-		kDown = hidKeysDown();
-		kHeld = hidKeysHeld();
-		kUp = hidKeysUp();
+		kDown = HI::getKeysDown();
+		kHeld = HI::getKeysHeld();
+		kUp = HI::getKeysUp();
 	}
-	else  gspWaitForVBlank();
-	if (kDown & KEY_START) {
+	else  HI::waitForVBlank();
+	if (kDown & HI::HI_KEY_START) {
 		exitBool = true;
 	}
 	//cout<< player->posX << ' ' << player->posY << ' ' << player->posZ << endl;
@@ -69,7 +63,7 @@ void gameCore::gameLaunch()
 	saveName = selected;
 	*/
 	
-	sf2d_set_clear_color(RGBA8(0, 0, 0, 0));
+	HI::setBackgroundColor(RGBA8(0, 0, 0, 0));
 	ifstream general;
 	general.open("saves/" + saveName + "/general.txt");
 	if (!general.is_open()) {
@@ -97,10 +91,10 @@ void gameCore::gameLaunch()
 	test.assign<Velocity>(caca);
 	test.assign<Player>(playerPos);
 
-	//soundObj.playFromFile("data/sounds/bgm/wilderness.ogg");
+	soundObj.playFromFile("data/sounds/bgm/wilderness.ogg");
 	map->startChunkLoader(playerPos);
 	tick = 0;
-	while (aptMainLoop() && !exitBool) {
+	while (HI::aptMainLoop() && !exitBool) {
 		gameLoop();
 		tick++;
 	}
@@ -116,13 +110,12 @@ void gameCore::gameLaunch()
 
 void gameCore::createSavefile(string saveName)
 {
-
-	fsCreateDir("saves/" + saveName + "/");
-	fsCreateDir("saves/" + saveName + "/chunks/");
-	std::ifstream  iFile1("data/gameData/defaultSavefile/general.txt", std::ios::binary);
+	HI::createDir("saves/" + saveName + "/");
+	HI::createDir("saves/" + saveName + "/chunks/");
+	std::ifstream  iFile1("data/defaultSavefile/general.txt", std::ios::binary);
 	std::ofstream  oFile1("saves/" + saveName + "/general.txt", std::ios::binary);
 	oFile1 << iFile1.rdbuf();
-	std::ifstream  iFile2("data/gameData/defaultSavefile/terrainTable.txt", std::ios::binary);
+	std::ifstream  iFile2("data/defaultSavefile/terrainTable.txt", std::ios::binary);
 	std::ofstream  oFile2("saves/" + saveName + "/terrainTable.txt", std::ios::binary);
 	oFile2 << iFile2.rdbuf();
 	iFile1.close();
@@ -165,8 +158,8 @@ void gameCore::gameMenu()
 {
 	struct button
 	{
-		sf2d_texture* pressed;
-		sf2d_texture* free;
+		HI::HITexture pressed;
+		HI::HITexture free;
 		int sizeX;
 		int sizeY;
 		int posX;
@@ -182,11 +175,11 @@ void gameCore::gameMenu()
 			posY = 0;
 			state = false;
 		}
-		void update(touchPosition touch, u32 kDown, u32 kHeld)
+		void update(point2D touch, unsigned int kDown, unsigned int kHeld)
 		{
-			if ((kDown | kHeld) & KEY_TOUCH)
+			if ((kDown | kHeld) & HI::HI_KEY_TOUCH)
 			{
-				if (touch.px >= posX && touch.px <= posX + sizeX && touch.py >= posY && touch.py <= posY + sizeY)
+				if (touch.x >= posX && touch.x <= posX + sizeX && touch.y >= posY && touch.y <= posY + sizeY)
 				{
 					state = true;
 				}
@@ -194,7 +187,7 @@ void gameCore::gameMenu()
 			}
 			else state = false;
 		}
-		sf2d_texture* getTexture() const
+		HI::HITexture getTexture() const
 		{
 			if (state) return pressed;
 			else return free;
@@ -206,15 +199,15 @@ void gameCore::gameMenu()
 	<Options>
 	<Quit>
 	*/
-	sf2d_set_clear_color(RGBA8(53, 159, 35, 0xFF));
-	sf2d_texture* topImage = sfil_load_PNG_file("data/sprites/menu_top.png", SF2D_PLACE_RAM);
-	sf2d_start_frame(GFX_TOP, GFX_LEFT);
-	sf2d_draw_texture(topImage, 0, 0);
-	sf2d_end_frame();
-	sf2d_swapbuffers();
+	HI::setBackgroundColor(RGBA8(53, 159, 35, 0xFF));
+	HI::HITexture topImage = HI::loadPngFile("data/sprites/menu_top.png");
+	HI::startFrame(HardwareInterface::SCREEN_TOP);
+	HI::drawTexture(topImage, 0, 0);
+	HI::endFrame();
+	HI::swapBuffers();
 
-	sf2d_texture*  unpressedButton = sfil_load_PNG_file("data/sprites/unpressed_button.png", SF2D_PLACE_RAM);
-	sf2d_texture*  pressedButton = sfil_load_PNG_file("data/sprites/pressed_button.png", SF2D_PLACE_RAM);
+	HI::HITexture unpressedButton = HI::loadPngFile("data/sprites/unpressed_button.png");
+	HI::HITexture  pressedButton = HI::loadPngFile("data/sprites/pressed_button.png");
 
 	button newGame;
 	newGame.posX = 85;
@@ -234,46 +227,46 @@ void gameCore::gameMenu()
 	loadGame.free = unpressedButton;
 	loadGame.state = false;
 
-	touchPosition touch;
+	point2D touch;
 
-	while (aptMainLoop()) {
-		hidScanInput();
+	while (HI::aptMainLoop()) {
+		HI::updateHID();
 
-		hidTouchRead(&touch);
-		kDown = hidKeysDown();
-		kHeld = hidKeysHeld();
-		kUp = hidKeysUp();
+		HI::updateTouch(touch);
+		kDown = HI::getKeysDown();
+		kHeld = HI::getKeysHeld();
+		kUp = HI::getKeysUp();
+		cout << "LMAOOOO" << endl;
+		HI::startFrame(HardwareInterface::SCREEN_BOT);
 
-		sf2d_start_frame(GFX_BOTTOM, GFX_LEFT);
+		HI::drawTexture(newGame.getTexture(), newGame.posX, newGame.posY);
+		HI::drawTexture(loadGame.getTexture(), loadGame.posX, loadGame.posY);
 
-		sf2d_draw_texture(newGame.getTexture(), newGame.posX, newGame.posY);
-		sf2d_draw_texture(loadGame.getTexture(), loadGame.posX, loadGame.posY);
+		HI::endFrame();
+		HI::startFrame(HardwareInterface::SCREEN_TOP);
+		HI::drawTexture(topImage, 0, 0);
+		HI::endFrame();
 
-		sf2d_end_frame();
-		sf2d_start_frame(GFX_TOP, GFX_LEFT);
-		sf2d_draw_texture(topImage, 0, 0);
-		sf2d_end_frame();
+		HI::swapBuffers();
+		if (kDown& HI::HI_KEY_START)return;
 
-		sf2d_swapbuffers();
-		if (kDown&KEY_START)return;
-
-		if (newGame.state && (kUp & KEY_TOUCH))
+		if (newGame.state && (kUp & HI::HI_KEY_TOUCH))
 		{
 			createSavefile("default");
 			loadSavefile("default");
 			gameLaunch();
-			sf2d_free_texture(topImage);
-			sf2d_free_texture(newGame.getTexture());
-			sf2d_free_texture(loadGame.getTexture());
+			HI::freeTexture(topImage);
+			HI::freeTexture(newGame.getTexture());
+			HI::freeTexture(loadGame.getTexture());
 			return;
 		}
-		if (loadGame.state && (kUp & KEY_TOUCH))
+		if (loadGame.state && (kUp & HI::HI_KEY_TOUCH))
 		{
 			loadSavefile("default");
 			gameLaunch();
-			sf2d_free_texture(topImage);
-			sf2d_free_texture(newGame.getTexture());
-			sf2d_free_texture(loadGame.getTexture());
+			HI::freeTexture(topImage);
+			HI::freeTexture(newGame.getTexture());
+			HI::freeTexture(loadGame.getTexture());
 			return;
 		}
 
@@ -281,7 +274,7 @@ void gameCore::gameMenu()
 		newGame.update(touch, kDown, kHeld);
 
 	}
-	sf2d_free_texture(topImage);
-	sf2d_free_texture(newGame.getTexture());
-	sf2d_free_texture(loadGame.getTexture());
+	HI::freeTexture(topImage);
+	HI::freeTexture(newGame.getTexture());
+	HI::freeTexture(loadGame.getTexture());
 }

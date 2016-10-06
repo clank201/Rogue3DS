@@ -48,6 +48,12 @@
     <ClCompile Include="source\movementSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\HardwareInterface3DS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\HardwareInterfaceVita.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\banner.bin">
@@ -57,6 +63,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram11.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\components.h">
@@ -93,6 +100,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\movementSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HardwareInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

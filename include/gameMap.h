@@ -3,9 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include <3ds.h>
-#include <sf2d.h>
-#include <sfil.h>
 #include <stdlib.h> 
 #include "core.h"
 #include "entityx/entityx.h"
@@ -21,10 +18,10 @@ private:
 	point3D mapIndex[CHUNK_NUM]; //indica quin bloc de terreny hi ha a cada posició		
 
 	string saveName;
-	Thread threadHandle;
+	//Thread threadHandle;
 	bool threadStatus;
 	bool threadCloseRequest;
-	static void chunkLoader(u32 arg);
+	static void chunkLoader(unsigned int arg);
 	unsigned char* getBlock(point3D posBlock) const;
 	void putBlock(int block, point3D posBlock);
 	static void createMapAndLoad(unsigned char*** map, point3D c);

@@ -1,10 +1,9 @@
  #pragma once
-#include <sf2d.h>
 #include "gameMap.h"
 #include "core.h"
 #include "UI.h"
-#include "sftd.h"
 #include "entityx/entityx.h"
+#include "HardwareInterface.h"
 
 namespace ex = entityx;
 
@@ -20,9 +19,11 @@ private:
 	void loadTexture(string fileName);
 	void freeTexture(string fileName);
 	void cameraUpdate();
-	sf2d_texture* getTexture(point3D p, mode mode_t = PRRT) const;
-	sf2d_texture* arrowTexture;
-	sftd_font* font;
+	HI::HITexture entitiesTexture;
+	HI::HITexture terrainTexture;
+	HI::HITexture getTexture(point3D p, mode mode_t = PRRT) const;
+	HI::HITexture arrowTexture;
+	//sftd_font* font;
 	point3D cameraPos;
 public:
 	explicit graphicsSystem(gameMap* map, point3D* pos);

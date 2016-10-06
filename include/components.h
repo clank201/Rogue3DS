@@ -25,7 +25,7 @@ struct  AIFollower {
 
 struct Health
 {
-	explicit Health(int maxHealth, int currentHealth) : maxHealth(maxHealth), currentHealth(currentHealth){}
+	explicit Health(int maxHealth, int currentHealth) : currentHealth(currentHealth), maxHealth(maxHealth){}
 
 	int currentHealth;
 	int maxHealth;
@@ -33,7 +33,7 @@ struct Health
 
 struct Stamina
 {
-	explicit Stamina(int maxStamina, int currentStamina) :maxStamina(maxStamina), currentStamina(currentStamina) {}
+	explicit Stamina(int maxStamina, int currentStamina) : currentStamina(currentStamina), maxStamina(maxStamina) {}
 
 	int currentStamina;
 	int maxStamina;

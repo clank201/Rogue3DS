@@ -1,6 +1,7 @@
 #include "../include/gameMap.h"
 #include "../include/core.h"
 #include "../include/SimplexNoise.h"
+#include "../include/HardwareInterface.h"
 
 using namespace std;
 
@@ -8,7 +9,7 @@ void gameMap::exit()
 {
 	threadCloseRequest = true;
 	while (threadStatus) {
-		svcSleepThread(10000000);
+		HI::sleepThread(10000000);
 	}
 	freeAllChunks();
 	for (int i = 0; i < CHUNK_NUM; i++) {
@@ -23,12 +24,12 @@ void gameMap::exit()
 	delete terrainMap;
 }
 
-void gameMap::chunkLoader(u32 arg)
+void gameMap::chunkLoader(unsigned int arg)
 {
 	gameMap* gameObj = (gameMap*)arg;
 	while (!gameObj->threadCloseRequest) {
 		gameObj->loadNewChunk();
-		svcSleepThread(50000000);
+		HI::sleepThread(50000000);
 	}
 	gameObj->threadStatus = false;
 }
@@ -36,7 +37,7 @@ void gameMap::chunkLoader(u32 arg)
 void gameMap::startChunkLoader(point3D* temp1)
 {
 	threadStatus = true;
-	threadHandle = threadCreate(ThreadFunc(gameMap::chunkLoader), this, 5000, 0x3F, 0, true);
+	HI::createThread((void*)(gameMap::chunkLoader), this, 5000, 0x3F, 0, true);
 }
 
 point3D gameMap::getChunk(point3D pos)
@@ -140,6 +141,7 @@ terrain gameMap::getTerrain(point3D pos)
 	point3D chunk = getChunk(pos);
 	if (!isChunkLoaded(pos))
 	{
+		cout << "Tried to get terrain from unloaded chunk"<<pos.x<<' '<<pos.y<<' ' <<pos.z <<endl;
 	}
 	return terrainList[terrainMap[getChunkID(chunk)][pos.x % CHUNK_SIZE][pos.y % CHUNK_SIZE][pos.z % CHUNK_SIZE]];
 }
@@ -392,7 +394,6 @@ bool gameMap::getTerrainSolid(point3D p) const
 
 gameMap::gameMap(string nameString) {
 	terrainListSize = 0;
-	threadHandle = nullptr;
 	saveName = nameString;
 	terrainMap = new unsigned char***[CHUNK_NUM];
 	for (int i = 0; i < CHUNK_NUM; i++) {

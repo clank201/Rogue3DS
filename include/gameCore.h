@@ -1,10 +1,8 @@
-#include <3ds.h>
 #include <string>
 #include "core.h"
 #include "graphicsSystem.h"
 #include "sound.h"
 #include "gameMap.h"
-#include <sftd.h>
 #include "entityx/entityx.h"
 
 namespace ex = entityx;
@@ -40,9 +38,9 @@ private:
 	void gameLoop();
 
 	bool exitBool;
-	u32 kDown;
-	u32 kUp;
-	u32 kHeld;
+	int kDown;
+	int kUp;
+	int kHeld;
 
 	ex::EntityX* EntityWorld;
 	gameMap* map;

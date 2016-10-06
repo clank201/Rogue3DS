@@ -2,12 +2,7 @@
 
 #include <string.h>
 #include <sstream>
-#include <dirent.h>
-
 #include <fstream>
-
-#include "sf2d.h"
-
 
 using namespace std;
 
@@ -56,6 +51,11 @@ struct point3D {
 	int y = -1;
 	int z = -1;
 };
+struct point2D {
+	int x = -1;
+	int y = -1;
+};
+
 struct entity {
 	string spriteName = "ENULL";
 	bool visible = true;
@@ -66,13 +66,6 @@ struct entity {
 };
 
 string get_string(int number);
-
-struct textureName {
-
-	sf2d_texture* texture;
-
-	string name = "";
-};
 
 struct terrain {
 	string textureFile = "TNULL";
