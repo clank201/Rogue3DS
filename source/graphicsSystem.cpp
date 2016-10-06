@@ -9,7 +9,7 @@ using namespace std;
 graphicsSystem::graphicsSystem(gameMap* map, point3D* pos): playerPos(pos), mapObj(map), cameraPos(*pos)
 {
 	entitiesTexture = HI::createTexture(512, 512);
-	arrowTexture = HI::loadPngFile("data/sprites/arrow.png");
+	arrowTexture = HI::loadPngFile(HI::getDataPath()+"sprites/arrow.png");
 	reloadTextures();
 }
 
@@ -79,7 +79,7 @@ int graphicsSystem::getTexturePos(string fileName) const
 void graphicsSystem::loadTexture(string fileName) { //load a texture from a file into the first free space inside texTable[]
 	int freeTextureLoc = freeTexturePos();
 	texTable[freeTextureLoc].name = fileName;
-	fileName = "data/sprites/" + fileName;
+	fileName = HI::getDataPath()+"sprites/" + fileName;
 	texTable[freeTextureLoc].texture = HI::loadPngFile(fileName.c_str());
 
 }

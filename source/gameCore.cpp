@@ -65,9 +65,9 @@ void gameCore::gameLaunch()
 	
 	HI::setBackgroundColor(RGBA8(0, 0, 0, 0));
 	ifstream general;
-	general.open("saves/" + saveName + "/general.txt");
+	general.open(HI::getSavesPath() + saveName + "/general.txt");
 	if (!general.is_open()) {
-		cout << "couldn't open file: " << ("saves/" + saveName + "/general.txt") << endl;
+		cout << "couldn't open file: " << (HI::getSavesPath()+ saveName + "/general.txt") << endl;
 	}
 	string playerSprite = "player.png", playerName;
 	string cacota;
@@ -91,7 +91,7 @@ void gameCore::gameLaunch()
 	test.assign<Velocity>(caca);
 	test.assign<Player>(playerPos);
 
-	soundObj.playFromFile("data/sounds/bgm/wilderness.ogg");
+	soundObj.playFromFile(HI::getDataPath()+"sounds/bgm/wilderness.ogg");
 	map->startChunkLoader(playerPos);
 	tick = 0;
 	while (HI::aptMainLoop() && !exitBool) {
@@ -99,7 +99,7 @@ void gameCore::gameLaunch()
 		tick++;
 	}
 
-	string generalFile = "saves/" + saveName + "/general.txt";
+	string generalFile = HI::getSavesPath() + saveName + "/general.txt";
 	std::remove(generalFile.c_str());
 	
 	ofstream generalO(generalFile);
@@ -110,19 +110,10 @@ void gameCore::gameLaunch()
 
 void gameCore::createSavefile(string saveName)
 {
-	HI::createDir("saves/" + saveName + "/");
-	HI::createDir("saves/" + saveName + "/chunks/");
-	std::ifstream  iFile1("data/defaultSavefile/general.txt", std::ios::binary);
-	std::ofstream  oFile1("saves/" + saveName + "/general.txt", std::ios::binary);
-	oFile1 << iFile1.rdbuf();
-	std::ifstream  iFile2("data/defaultSavefile/terrainTable.txt", std::ios::binary);
-	std::ofstream  oFile2("saves/" + saveName + "/terrainTable.txt", std::ios::binary);
-	oFile2 << iFile2.rdbuf();
-	iFile1.close();
-	iFile2.close();
-	oFile1.close();
-	oFile2.close();
-
+	HI::createDir(HI::getSavesPath() + saveName + "/");
+	HI::createDir(HI::getSavesPath() + saveName + "/chunks/");
+	HI::copyFile(HI::getDataPath() + "gameData/defaultSavefile/general.txt", HI::getSavesPath() + saveName + "/general.txt");
+	HI::copyFile(HI::getDataPath() + "gameData/defaultSavefile/terrainTable.txt", HI::getSavesPath() + saveName + "/terrainTable.txt");	  
 }
 
 void gameCore::loadSavefile(string saveID)
@@ -200,14 +191,14 @@ void gameCore::gameMenu()
 	<Quit>
 	*/
 	HI::setBackgroundColor(RGBA8(53, 159, 35, 0xFF));
-	HI::HITexture topImage = HI::loadPngFile("data/sprites/menu_top.png");
+	HI::HITexture topImage = HI::loadPngFile(HI::getDataPath()+"sprites/menu_top.png");
 	HI::startFrame(HardwareInterface::SCREEN_TOP);
 	HI::drawTexture(topImage, 0, 0);
 	HI::endFrame();
 	HI::swapBuffers();
 
-	HI::HITexture unpressedButton = HI::loadPngFile("data/sprites/unpressed_button.png");
-	HI::HITexture  pressedButton = HI::loadPngFile("data/sprites/pressed_button.png");
+	HI::HITexture unpressedButton = HI::loadPngFile(HI::getDataPath()+"sprites/unpressed_button.png");
+	HI::HITexture  pressedButton = HI::loadPngFile(HI::getDataPath()+"sprites/pressed_button.png");
 
 	button newGame;
 	newGame.posX = 85;

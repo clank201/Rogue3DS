@@ -172,7 +172,7 @@ void gameMap::saveChunk(point3D c) { //unloads a chunk from memory and saves it 
 		return;
 	}
 	ofstream chunkFile;
-	string terrainName = ("saves/" + saveName + "/chunks/terrain." + get_string(c.x) + '.' + get_string(c.y) + '.' + get_string(c.z));
+	string terrainName = (HI::getSavesPath() + saveName + "/chunks/terrain." + get_string(c.x) + '.' + get_string(c.y) + '.' + get_string(c.z));
 	chunkFile.open(terrainName, ios_base::binary);
 	if (!chunkFile.is_open()) {
 		//cout<< "couldn't open file: " << terrainName << endl;
@@ -235,7 +235,7 @@ void gameMap::loadChunk(point3D c) { //Loads a certain chunk inside mapIndex[] a
 		chunkPos = freeChunkID();
 	}
 	ifstream chunkFile;
-	string terrainName = ("saves/" + saveName + "/chunks/terrain." + get_string(c.x) + '.' + get_string(c.y) + '.' + get_string(c.z));
+	string terrainName = (HI::getSavesPath() + saveName + "/chunks/terrain." + get_string(c.x) + '.' + get_string(c.y) + '.' + get_string(c.z));
 	chunkFile.open(terrainName, ios_base::binary);
 	if (!chunkFile.is_open()) {
 		//cout<< "couldn't open file: " << terrainName << endl;
@@ -269,7 +269,7 @@ void gameMap::loadChunk(point3D c) { //Loads a certain chunk inside mapIndex[] a
 }
 void gameMap::loadTerrainTable() {
 	ifstream terrainTable;
-	string terrainName = ("saves/" + saveName + "/terrainTable.txt");
+	string terrainName = (HI::getSavesPath() + saveName + "/terrainTable.txt");
 	terrainTable.open(terrainName);
 	if (!terrainTable.is_open()) {
 		//cout<< "error opening terrainTable" << endl;
