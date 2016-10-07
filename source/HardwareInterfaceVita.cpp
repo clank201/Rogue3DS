@@ -79,7 +79,7 @@ void HI::freeTexture(HITexture texture)
 }
 HI::HITexture HI::createTexture(int sizeX, int sizeY)
 {
-	return (HI::HITexture)&sizeX;
+	vita2d_create_empty_texture(sizeX, sizeY);
 }
 
 void HI::endFrame()

@@ -8,8 +8,10 @@ using namespace std;
 
 graphicsSystem::graphicsSystem(gameMap* map, point3D* pos): playerPos(pos), mapObj(map), cameraPos(*pos)
 {
-	entitiesTexture = HI::createTexture(512, 512);
+	entitiesTexture = HI::createTexture(64, 64);
 	arrowTexture = HI::loadPngFile(HI::getDataPath()+"sprites/arrow.png");
+	entityTexturePos.x = 0;
+	entityTexturePos.y = 0;
 	reloadTextures();
 }
 
@@ -20,11 +22,28 @@ graphicsSystem::~graphicsSystem()
 
 void graphicsSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
 {
+	loadEntityTextures(es,events,dt);
 	drawFrame(es,events,dt);
 }
 
 void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) {
 	cameraUpdate();
+	struct queueElement
+	{
+		point3D pos;
+		point2D spritePos;
+	};
+	int queueNumber = 0;
+	queueElement entityQueue[32];
+	entityx::ComponentHandle<FixedSprite> fixedSprite;
+	entityx::ComponentHandle<Position> position;
+
+	for (entityx::Entity entity : es.entities_with_components(position, fixedSprite))
+	{
+		entityQueue[queueNumber].pos = position->currentPosition;
+		entityQueue[queueNumber].spritePos = fixedSprite->texPos;
+		queueNumber++;
+	}
 	HI::startFrame(HI::SCREEN_TOP);
 	point3D p;
 	for (int i = 0; i != 15; i++) {
@@ -39,9 +58,20 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 					if (y > 1) HI::drawTextureRotate(arrowTexture, j * 16 + 8, i * 16 + 8, PI);
 					else if (y == 0) HI::drawTexture(arrowTexture, j * 16, i * 16);
 				}
+				for(int i = 0; i<queueNumber;i++)
+				{
+					
+					if(entityQueue[i].pos.x == p.x && entityQueue[i].pos.y == p.y && entityQueue[i].pos.z == p.z)
+					{
+						cout << "AYYYYYYYYYY" << endl;
+						HI::drawTexturePart(entitiesTexture, entityQueue[i].spritePos.x, entityQueue[i].spritePos.y, j * 16, i * 16, 16, 16);
+					}
+				}
 			}
 		}
 	}
+
+	HI::drawTexturePart(entitiesTexture, 0, 0, 0, 0, 16, 16);
 	HI::endFrame();
 
 	HI::swapBuffers();
@@ -111,6 +141,29 @@ void graphicsSystem::cameraUpdate()
 	if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
 	if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
 	cameraPos = *playerPos;
+}
+
+void graphicsSystem::loadEntityTextures(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
+{
+	entityx::ComponentHandle<FixedSprite> FixedSprite;
+	for (entityx::Entity entity : es.entities_with_components(FixedSprite))
+	{
+		if(!FixedSprite->isLoaded)
+		{
+			HI::HITexture temp = HI::loadPngFile(HI::getDataPath() + "sprites/" + FixedSprite->filename);
+			HardwareInterface::mergeTextures(temp, entitiesTexture, entityTexturePos.x, entityTexturePos.y);
+			FixedSprite->texPos.x = entityTexturePos.x;
+			FixedSprite->texPos.y = entityTexturePos.y;
+			FixedSprite->isLoaded = true;
+			entityTexturePos.x += 16;
+			if(entityTexturePos.x+16>511)
+			{
+				entityTexturePos.y += 16;
+				entityTexturePos.x = 0;
+			}
+			HI::freeTexture(temp);
+		}
+	}
 }
 
 HI::HITexture graphicsSystem::getTexture(point3D p, mode mode_t) const

@@ -19,11 +19,12 @@ private:
 	void loadTexture(string fileName);
 	void freeTexture(string fileName);
 	void cameraUpdate();
+	void loadEntityTextures(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt);
+	point2D entityTexturePos;
 	HI::HITexture entitiesTexture;
 	HI::HITexture terrainTexture;
 	HI::HITexture getTexture(point3D p, mode mode_t = PRRT) const;
 	HI::HITexture arrowTexture;
-	//sftd_font* font;
 	point3D cameraPos;
 public:
 	explicit graphicsSystem(gameMap* map, point3D* pos);

@@ -90,6 +90,7 @@ void gameCore::gameLaunch()
 	caca.z++;
 	test.assign<Velocity>(caca);
 	test.assign<Player>(playerPos);
+	test.assign<FixedSprite>("player.png");
 
 	soundObj.playFromFile(HI::getDataPath()+"sounds/bgm/wilderness.ogg");
 	map->startChunkLoader(playerPos);

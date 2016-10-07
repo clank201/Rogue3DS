@@ -88,15 +88,16 @@ void HI::drawTexturePart(HI::HITexture texture, int startX, int startY, int posX
 	sf2d_draw_texture_part((sf2d_texture*)texture, posX, posY, startX, startY, sizeX, sizeY);
 }
 
-void HI::mergeTextures(HITexture origin, HITexture destination, short posX, short posY)
+void HI::mergeTextures(HITexture origin, HITexture destination, short posX, short posY)			   ////////AIXO NO FUNCA K B I NO SE NI VEIG PK FIRE
 {
-	for (short i = posY; i < posY + ((sf2d_texture*)origin)->height; i++)
+	for (short i = 0; i < ((sf2d_texture*)origin)->height; i++)
 	{
-		for (short j = posX; j < posX + ((sf2d_texture*)origin)->width; j++)
+		for (short j = 0; j < ((sf2d_texture*)origin)->width; j++)
 		{
-			sf2d_set_pixel(((sf2d_texture*)destination), j, i, sf2d_get_pixel(((sf2d_texture*)origin), j - posX, i - posY));
+			sf2d_set_pixel(((sf2d_texture*)destination), j+posX, i+posY,sf2d_get_pixel(((sf2d_texture*)origin), j, i));
 		}
 	}
+	
 }
 
 void HI::drawRectangle(int posX, int posY, int width, int height, HI::HIColor color)
