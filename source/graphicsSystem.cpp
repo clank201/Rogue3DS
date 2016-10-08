@@ -8,10 +8,7 @@ using namespace std;
 
 graphicsSystem::graphicsSystem(gameMap* map, point3D* pos): playerPos(pos), mapObj(map), cameraPos(*pos)
 {
-	entitiesTexture = HI::createTexture(64, 64);
 	arrowTexture = HI::loadPngFile(HI::getDataPath()+"sprites/arrow.png");
-	entityTexturePos.x = 0;
-	entityTexturePos.y = 0;
 	reloadTextures();
 }
 
@@ -22,7 +19,7 @@ graphicsSystem::~graphicsSystem()
 
 void graphicsSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
 {
-	loadEntityTextures(es,events,dt);
+		loadEntityTextures(es, events, dt);
 	drawFrame(es,events,dt);
 }
 
@@ -31,7 +28,7 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 	struct queueElement
 	{
 		point3D pos;
-		point2D spritePos;
+		unsigned short spritePos;
 	};
 	int queueNumber = 0;
 	queueElement entityQueue[32];
@@ -42,6 +39,7 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 	{
 		entityQueue[queueNumber].pos = position->currentPosition;
 		entityQueue[queueNumber].spritePos = fixedSprite->texPos;
+		cout << fixedSprite->texPos << endl;
 		queueNumber++;
 	}
 	HI::startFrame(HI::SCREEN_TOP);
@@ -58,20 +56,18 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 					if (y > 1) HI::drawTextureRotate(arrowTexture, j * 16 + 8, i * 16 + 8, PI);
 					else if (y == 0) HI::drawTexture(arrowTexture, j * 16, i * 16);
 				}
-				for(int i = 0; i<queueNumber;i++)
+				for(int k = 0; k<queueNumber;k++)
 				{
-					
-					if(entityQueue[i].pos.x == p.x && entityQueue[i].pos.y == p.y && entityQueue[i].pos.z == p.z)
+					if(entityQueue[k].pos.x == p.x && entityQueue[k].pos.y == p.y && entityQueue[k].pos.z == p.z)
 					{
-						cout << "AYYYYYYYYYY" << endl;
-						HI::drawTexturePart(entitiesTexture, entityQueue[i].spritePos.x, entityQueue[i].spritePos.y, j * 16, i * 16, 16, 16);
+						HI::drawTexture(texTable[entityQueue[k].spritePos].texture, j * 16, i * 16);
 					}
 				}
 			}
 		}
 	}
 
-	HI::drawTexturePart(entitiesTexture, 0, 0, 0, 0, 16, 16);
+
 	HI::endFrame();
 
 	HI::swapBuffers();
@@ -106,12 +102,12 @@ int graphicsSystem::getTexturePos(string fileName) const
 	//cout<< "NO TEXTURE W/ FNAME " << fileName << " FOUND" << endl;
 	return -1;
 }
-void graphicsSystem::loadTexture(string fileName) { //load a texture from a file into the first free space inside texTable[]
+int graphicsSystem::loadTexture(string fileName) { //load a texture from a file into the first free space inside texTable[]
 	int freeTextureLoc = freeTexturePos();
 	texTable[freeTextureLoc].name = fileName;
 	fileName = HI::getDataPath()+"sprites/" + fileName;
 	texTable[freeTextureLoc].texture = HI::loadPngFile(fileName.c_str());
-
+	return freeTextureLoc;
 }
 void graphicsSystem::freeTexture(string fileName) { //frees a texture from texTable[]
 	int textureLocation = getTexturePos(fileName);
@@ -150,18 +146,8 @@ void graphicsSystem::loadEntityTextures(entityx::EntityManager& es, entityx::Eve
 	{
 		if(!FixedSprite->isLoaded)
 		{
-			HI::HITexture temp = HI::loadPngFile(HI::getDataPath() + "sprites/" + FixedSprite->filename);
-			HardwareInterface::mergeTextures(temp, entitiesTexture, entityTexturePos.x, entityTexturePos.y);
-			FixedSprite->texPos.x = entityTexturePos.x;
-			FixedSprite->texPos.y = entityTexturePos.y;
 			FixedSprite->isLoaded = true;
-			entityTexturePos.x += 16;
-			if(entityTexturePos.x+16>511)
-			{
-				entityTexturePos.y += 16;
-				entityTexturePos.x = 0;
-			}
-			HI::freeTexture(temp);
+			FixedSprite->texPos = loadTexture(FixedSprite->filename);
 		}
 	}
 }

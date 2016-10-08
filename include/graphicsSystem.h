@@ -16,13 +16,10 @@ private:
 	bool isTextureLoaded(string textureFile) const;
 	int freeTexturePos() const;
 	int getTexturePos(string fileName) const;
-	void loadTexture(string fileName);
+	int loadTexture(string fileName);
 	void freeTexture(string fileName);
 	void cameraUpdate();
 	void loadEntityTextures(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt);
-	point2D entityTexturePos;
-	HI::HITexture entitiesTexture;
-	HI::HITexture terrainTexture;
 	HI::HITexture getTexture(point3D p, mode mode_t = PRRT) const;
 	HI::HITexture arrowTexture;
 	point3D cameraPos;

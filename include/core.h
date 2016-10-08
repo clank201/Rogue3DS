@@ -71,6 +71,7 @@ struct terrain {
 	string textureFile = "TNULL";
 	bool visible = true;
 	bool solid = true;
+	int texturePos = -1;
 };
 
 bool fsIsDirectory(const std::string path);

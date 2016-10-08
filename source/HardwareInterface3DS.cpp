@@ -90,13 +90,9 @@ void HI::drawTexturePart(HI::HITexture texture, int startX, int startY, int posX
 
 void HI::mergeTextures(HITexture origin, HITexture destination, short posX, short posY)			   ////////AIXO NO FUNCA K B I NO SE NI VEIG PK FIRE
 {
-	for (short i = 0; i < ((sf2d_texture*)origin)->height; i++)
-	{
-		for (short j = 0; j < ((sf2d_texture*)origin)->width; j++)
-		{
-			sf2d_set_pixel(((sf2d_texture*)destination), j+posX, i+posY,sf2d_get_pixel(((sf2d_texture*)origin), j, i));
-		}
-	}
+	sf2d_texture *orig = (sf2d_texture*)origin;
+	sf2d_texture *dest = (sf2d_texture*)destination;
+	C3D_SafeTextureCopy((u32*)orig->tex.data,16, (u32*)dest->tex.data,16, orig->tex.size,0);
 	
 }
 

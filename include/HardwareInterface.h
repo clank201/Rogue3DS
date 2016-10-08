@@ -215,6 +215,6 @@ namespace HardwareInterface
 }
 namespace HI = HardwareInterface;
 struct textureName {
-	HI::HITexture texture;
+	HI::HITexture texture  = NULL;
 	string name = "";
 };

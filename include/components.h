@@ -14,7 +14,7 @@ struct  Animation{
 struct  FixedSprite {
 	explicit FixedSprite(string filename) : filename(filename) {}
 	bool isLoaded= false;
-	point2D texPos;
+	int texPos;
 	string filename;
 };
 
