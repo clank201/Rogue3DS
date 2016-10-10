@@ -39,7 +39,6 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 	{
 		entityQueue[queueNumber].pos = position->currentPosition;
 		entityQueue[queueNumber].spritePos = fixedSprite->texPos;
-		cout << fixedSprite->texPos << endl;
 		queueNumber++;
 	}
 	HI::startFrame(HI::SCREEN_TOP);
@@ -60,7 +59,7 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 				{
 					if(entityQueue[k].pos.x == p.x && entityQueue[k].pos.y == p.y && entityQueue[k].pos.z == p.z)
 					{
-						HI::drawTexture(texTable[entityQueue[k].spritePos].texture, j * 16, i * 16);
+						HI::drawTexture(texTable[entityQueue[k].spritePos].texture, j * 16,i * 16);
 					}
 				}
 			}
@@ -136,7 +135,7 @@ void graphicsSystem::cameraUpdate()
 	if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
 	if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
 	if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
-	cameraPos = *playerPos;
+	cameraPos.z =playerPos->z;
 }
 
 void graphicsSystem::loadEntityTextures(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)

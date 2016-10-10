@@ -19,9 +19,10 @@ struct  FixedSprite {
 };
 
 struct  AIFollower {
-	explicit AIFollower(point3D target) : target(target){}
+	explicit AIFollower(point3D* target, int dist) : dist(dist), target(target){}
 
-	point3D target;
+	int dist;
+	point3D* target;
 };
 
 struct Health

@@ -7,6 +7,7 @@
 #include "../include/movementSystem.h"
 #include "../include/components.h"
 #include "../include/gameCore.h"
+#include "../include/AISystem.h"
 
 using namespace std;
 namespace ex = entityx;
@@ -81,6 +82,7 @@ void gameCore::gameLaunch()
 	EntityWorld->systems.add<inputSystem>(&kDown,&kUp,&kHeld);
 	EntityWorld->systems.add<movementSystem>(map);
 	EntityWorld->systems.add<graphicsSystem>(map, playerPos);
+	EntityWorld->systems.add<AISystem>();
 	EntityWorld->systems.configure();
 	entityx::Entity test = EntityWorld->entities.create();
 	test.assign<Position>(*playerPos);
@@ -91,8 +93,14 @@ void gameCore::gameLaunch()
 	test.assign<Velocity>(caca);
 	test.assign<Player>(playerPos);
 	test.assign<FixedSprite>("player.png");
-
-	soundObj.playFromFile(HI::getDataPath()+"sounds/bgm/wilderness.ogg");
+	point3D dogPos = *playerPos;
+	dogPos.x++;
+	entityx::Entity doggo = EntityWorld->entities.create();
+	doggo.assign<AIFollower>(playerPos,3);
+	doggo.assign<Velocity>(caca);
+	doggo.assign<Position>(dogPos);
+	doggo.assign<FixedSprite>("doggo.png");	
+	//soundObj.playFromFile(HI::getDataPath()+"sounds/bgm/wilderness.ogg");
 	map->startChunkLoader(playerPos);
 	tick = 0;
 	while (HI::aptMainLoop() && !exitBool) {
@@ -228,7 +236,6 @@ void gameCore::gameMenu()
 		kDown = HI::getKeysDown();
 		kHeld = HI::getKeysHeld();
 		kUp = HI::getKeysUp();
-		cout << "LMAOOOO" << endl;
 		HI::startFrame(HardwareInterface::SCREEN_BOT);
 
 		HI::drawTexture(newGame.getTexture(), newGame.posX, newGame.posY);

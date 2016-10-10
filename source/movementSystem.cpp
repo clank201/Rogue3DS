@@ -16,21 +16,21 @@ void movementSystem::update(entityx::EntityManager& es, entityx::EventManager& e
 		temp.x += velocity->currentVelocity.x;
 		temp.y += velocity->currentVelocity.y;
 		temp.z += velocity->currentVelocity.z;
-		if(!basicCollision(temp))
+		if(!mapObj->simpleCollision(temp))
 		{
 			position->currentPosition = temp;
 		}
 		else
 		{
 			temp.z++;
-			if(!basicCollision(temp))
+			if(!mapObj->simpleCollision(temp))
 			{
 				position->currentPosition = temp;
 			}
 		}
 		temp = position->currentPosition;
 		temp.z--;
-		if(!basicCollision(temp))
+		if(!mapObj->simpleCollision(temp))
 		{
 			position->currentPosition = temp;
 		}
@@ -39,11 +39,5 @@ void movementSystem::update(entityx::EntityManager& es, entityx::EventManager& e
 	for(entityx::Entity entity : es.entities_with_components(player,position))
 	{
 		*player->pos = position->currentPosition;
-		cout << player->pos->x << " " << player->pos->y << " " << player->pos->z << endl;
 	}
-}
-
-bool movementSystem::basicCollision(point3D pos)
-{
-	return mapObj->getTerrain(pos).solid;
 }

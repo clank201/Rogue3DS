@@ -139,9 +139,9 @@ int gameMap::getBlocksChunkID(point3D b) const
 terrain gameMap::getTerrain(point3D pos)
 {
 	point3D chunk = getChunk(pos);
-	if (!isChunkLoaded(pos))
+	if (!isChunkLoaded(chunk))
 	{
-		cout << "Tried to get terrain from unloaded chunk"<<pos.x<<' '<<pos.y<<' ' <<pos.z <<endl;
+		return terrain();//cout << "Tried to get terrain from unloaded chunk"<<pos.x<<' '<<pos.y<<' ' <<pos.z <<endl;
 	}
 	return terrainList[terrainMap[getChunkID(chunk)][pos.x % CHUNK_SIZE][pos.y % CHUNK_SIZE][pos.z % CHUNK_SIZE]];
 }
@@ -322,17 +322,12 @@ bool gameMap::simpleCollision(int posX, int posY, int posZ) const
 	b.x = posX;
 	b.y = posY;
 	b.z = posZ;
-	if (posX < 0 || posY < 0 || posZ < 0) return true;
-	if (terrainList[*getBlock(b)].solid == 1) {
-		return true;
-	}
-	return false;
+	return simpleCollision(b);
 }
 bool gameMap::simpleCollision(point3D p) const
 {	//Tells if terrain at position is occupied
-
-	if (p.x < 0 || p.y < 0 || p.z < 0) return true;
-	if (terrainList[*getBlock(p)].solid == 1) {
+	if (p.x <= 0 || p.y <= 0 || p.z <= 0) return true;
+	if (isChunkLoaded(getChunk(p)) && terrainList[*getBlock(p)].solid == 1) {
 		return true;
 	}
 	return false;

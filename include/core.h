@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sstream>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -50,6 +51,10 @@ struct point3D {
 	int x = -1;
 	int y = -1;
 	int z = -1;
+	bool inRange(point3D p, int dist)
+	{
+		return (abs(p.x - x) < dist && abs(p.y - y) < dist && abs(p.y - y) < dist);
+	}
 };
 struct point2D {
 	int x = -1;
