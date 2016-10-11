@@ -83,7 +83,7 @@ void gameMap::createMapAndLoad(unsigned char*** map, point3D c) {
 				}
 				else if (h + c.z*CHUNK_SIZE == terrainHeight) {	 //si es la capa superficial
 					if (terrainHeight <= SEA_LEVEL) map[j][i][h] = 4;
-					else map[j][i][h] = (rand() % 15 == 0 ? 6 : rand() % 14 == 0 ? 7:1);
+					else map[j][i][h] = (rand() % 15 == 0 ? rand() % 14 == 0 ? 7 : 6 : 1);
 				}
 				else map[j][i][h] = 2;
 			}

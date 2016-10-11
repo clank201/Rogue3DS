@@ -74,10 +74,12 @@
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="3dsmakefile.mk" />
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram11.cd" />
     <None Include="resources\banner.bin" />
     <None Include="resources\icon.bin" />
+    <None Include="vitamakefile.mk" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AISystem.h" />

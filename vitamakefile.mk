@@ -1,5 +1,5 @@
-TITLE_ID = VITA2DTST
-TARGET   = vita2dsample
+TITLE_ID = ROGUEVITA
+TARGET   = rogueVita
 SOURCES = $(wildcard source/*.cpp) $(wildcard source/*.c) $(wildcard source/entityx/*.cpp) $(wildcard source/entityx/*.c) $(wildcard source/entityx/help/*.cpp) $(wildcard source/entityx/help/*.c) 
 OBJS     = $(SOURCES)
 

@@ -43,11 +43,11 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 	}
 	HI::startFrame(HI::SCREEN_TOP);
 	point3D p;
-	for (int i = 0; i != 15; i++) {
-		for (int j = 0; j != 25; j++) {
+	for (int i = 0; i != HI::getScreenHeight()/16; i++) {
+		for (int j = 0; j != HI::getScreenWidth()/16; j++) {
 			for (int y = RENDER_HEIGHT; y >= 0; y--) {
-				p.x = (cameraPos.x + j) - 12;
-				p.y = (cameraPos.y + i) - 7;
+				p.x = (cameraPos.x + j) -(((HI::getScreenWidth() / 16)/2)-1);
+				p.y = (cameraPos.y + i) - (((HI::getScreenHeight() / 16) / 2) - 1);
 				p.z = (cameraPos.z - y);
 				//cout << "X " << p.x << " Y " << p.y << " Z " << p.z << endl;
 				if (p.x >= 0 && p.y >= 0 && p.z >= 0 && mapObj->isVisible(p)) {
@@ -131,10 +131,10 @@ void graphicsSystem::freeAllTextures() {	 //frees all textures
 
 void graphicsSystem::cameraUpdate()
 {
-	if (cameraPos.x - 5 < playerPos->x) { cameraPos.x++; }
-	if (cameraPos.x + 4 > playerPos->x) { cameraPos.x--; }
-	if (cameraPos.y - 4 < playerPos->y) { cameraPos.y++; }
-	if (cameraPos.y + 3 > playerPos->y) { cameraPos.y--; }
+	if (cameraPos.x - ((HI::getScreenWidth()/16)/5) < playerPos->x) { cameraPos.x++; }
+	if (cameraPos.x + (((HI::getScreenWidth() / 16) / 5)+1) > playerPos->x) { cameraPos.x--; }
+	if (cameraPos.y - ((HI::getScreenHeight() / 16) / 5) < playerPos->y) { cameraPos.y++; }
+	if (cameraPos.y + (((HI::getScreenHeight() / 16) / 5) + 1) > playerPos->y) { cameraPos.y--; }
 	cameraPos.z =playerPos->z;
 }
 

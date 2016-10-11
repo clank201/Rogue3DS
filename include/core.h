@@ -48,6 +48,8 @@ enum gameState {
 	STATE_WORLD,
 };
 struct point3D {
+	point3D(int x, int y, int z) : x(x),y(y),z(z){}
+	point3D(){}
 	int x = -1;
 	int y = -1;
 	int z = -1;

@@ -10,7 +10,7 @@ void AISystem::update(entityx::EntityManager& es, entityx::EventManager& events,
 	entityx::ComponentHandle<Position> position;
 	for (entityx::Entity entity : es.entities_with_components(follower, velocity, position)) {
 		if (follower->target->inRange(position->currentPosition, follower->dist)) {
-			velocity->currentVelocity = point3D{ 0,0,0 };
+			velocity->currentVelocity = point3D(0,0,0);
 		}
 		else {
 			if (follower->target->x - position->currentPosition.x > follower->dist) { velocity->currentVelocity.x = 1; }

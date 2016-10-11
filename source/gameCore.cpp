@@ -9,6 +9,7 @@
 #include "../include/gameCore.h"
 #include "../include/AISystem.h"
 
+
 using namespace std;
 namespace ex = entityx;
 
@@ -74,6 +75,7 @@ void gameCore::gameLaunch()
 	string cacota;
 	general >> cacota >> playerPos->x >> playerPos->y >> playerPos->z;
 	general.close();
+	puts("LMAOOOO");
 	map->addPlayer(playerPos);
 	for (int i = 0; i < CHUNK_NUM; i++) {
 		map->loadNewChunk();
@@ -94,7 +96,9 @@ void gameCore::gameLaunch()
 	test.assign<Player>(playerPos);
 	test.assign<FixedSprite>("player.png");
 	point3D dogPos = *playerPos;
-	dogPos.x++;
+	dogPos.x += 4;
+	dogPos.y += 6;
+
 	entityx::Entity doggo = EntityWorld->entities.create();
 	doggo.assign<AIFollower>(playerPos,3);
 	doggo.assign<Velocity>(caca);
@@ -249,7 +253,7 @@ void gameCore::gameMenu()
 		HI::swapBuffers();
 		if (kDown& HI::HI_KEY_START)return;
 
-		if (newGame.state && (kUp & HI::HI_KEY_TOUCH))
+		if (true || newGame.state && (kUp & HI::HI_KEY_TOUCH))
 		{
 			createSavefile("default");
 			loadSavefile("default");
@@ -259,7 +263,7 @@ void gameCore::gameMenu()
 			HI::freeTexture(loadGame.getTexture());
 			return;
 		}
-		if (loadGame.state && (kUp & HI::HI_KEY_TOUCH))
+		if (false && loadGame.state && (kUp & HI::HI_KEY_TOUCH))
 		{
 			loadSavefile("default");
 			gameLaunch();
