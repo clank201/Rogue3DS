@@ -5,12 +5,16 @@
 #include <psp2/kernel/processmgr.h>
 #include <psp2/ctrl.h>
 #include <psp2/display.h>
+#include <psp2shell.h>
+
 //#include <pthread.h>
 void HI::systemInit() {
 	vita2d_init();
+	psp2shell_init(3333, 0);
 }
 
 void HI::systemFini() {
+	psp2shell_exit();
 	vita2d_fini();
 	sceKernelExitProcess(0);
 }
@@ -175,6 +179,11 @@ void HI::dspChnWaveBufAdd(int id, HI::dspWaveBuf* buf) {	   		  //BORKEN
 
 //??
 void HI::DSP_FlushDataCache(const void* address, unsigned int size) {			  //BORKEN
+}
+
+void HardwareInterface::debugPrint(string s)
+{
+	psp2shell_print(s.c_str());
 }
 
 void HI::gspWaitForEvent(HardwareInterface::GSPGPU_Event id, bool nextEvent) {	  		  //BORKEN

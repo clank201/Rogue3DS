@@ -195,6 +195,10 @@ namespace HardwareInterface
 	//??
 	void DSP_FlushDataCache(const void* address, unsigned int size);
 
+	//DEBUGGING
+	void debugPrint(string s);
+
+
 	//GSP
 	enum  GSPGPU_Event
 	{

@@ -5,7 +5,9 @@ OBJS     = $(SOURCES)
 
 LIBS = -lvita2d -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
 	-lSceSysmodule_stub -lSceCtrl_stub -lScePgf_stub \
-	-lSceCommonDialog_stub -lfreetype -lpng -ljpeg -lz -lm -lc
+	-lSceCommonDialog_stub -lfreetype -lpng -ljpeg -lz -lm -lc \
+	-lpsp2shell -lSceSysmodule_stub -lSceNet_stub \
+	-lSceNetCtl_stub -lSceKernel_stub -lScePower_stub -lSceAppMgr_stub
 
 PREFIX  = arm-vita-eabi
 CC      = $(PREFIX)-g++
@@ -19,7 +21,7 @@ all: $(TARGET).vpk
 	vita-pack-vpk -s param.sfo -b eboot.bin $@
 
 eboot.bin: $(TARGET).velf
-	vita-make-fself -s $< $@
+	vita-make-fself $< $@
 
 %.velf: %.elf
 	vita-elf-create $< $@
@@ -31,7 +33,7 @@ $(TARGET).elf: $(OBJS)
 	$(PREFIX)-ld -r -b binary -o $@ $^
 
 clean:
-	@rm -rf $(TARGET).vpk $(TARGET).velf $(TARGET).elf $(OBJS) \
+	@rm -rf $(TARGET).vpk $(TARGET).velf $(TARGET).elf \
 		eboot.bin param.sfo
 
 vpksend: $(TARGET).vpk
