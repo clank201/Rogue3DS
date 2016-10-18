@@ -272,8 +272,7 @@ void gameMap::loadTerrainTable() {
 	string terrainName = (HI::getSavesPath() + saveName + "/terrainTable.txt");
 	terrainTable.open(terrainName);
 	if (!terrainTable.is_open()) {
-		//cout<< "error opening terrainTable" << endl;
-
+		HI::debugPrint("error opening terrainTable \n");  
 		return;
 	}
 	int i = 0;
@@ -303,7 +302,7 @@ void gameMap::loadNewChunk() {
 							if (freeChunkID() == -1) {
 								freeAChunk();
 								if (freeChunkID() == -1) {
-									cout << "no tinc espai tito" << endl;
+									HI::debugPrint("No free space for a new chunk \n");
 									return;
 								}
 							}
@@ -327,8 +326,8 @@ bool gameMap::simpleCollision(int posX, int posY, int posZ) const
 bool gameMap::simpleCollision(point3D p) const
 {	//Tells if terrain at position is occupied
 	if (p.x <= 0 || p.y <= 0 || p.z <= 0) return true;
-	if (isChunkLoaded(getChunk(p)) && terrainList[*getBlock(p)].solid == 1) {
-		return true;
+	if (isChunkLoaded(getChunk(p)) && terrainList[*getBlock(p)].solid) {
+		return (isChunkLoaded(getChunk(p)) && terrainList[*getBlock(p)].solid);
 	}
 	return false;
 }
@@ -341,9 +340,9 @@ bool gameMap::isVisible(point3D p) const
 	b.z = floor(p.z / CHUNK_SIZE);
 	int chunkPosition = getChunkID(b);
 	if (chunkPosition == -1) {
+		//HI::debugPrint("gameMap::isVisible chunk not loaded \n");			   molt costós
 		return false;
 	}
-	//cout << chunkPosition;
 	return terrainList[terrainMap[chunkPosition][p.x - b.x * CHUNK_SIZE][p.y - b.y * CHUNK_SIZE][p.z - b.z * CHUNK_SIZE]].visible;
 }
 int gameMap::getTerrainListSize() const
@@ -362,12 +361,12 @@ string gameMap::getTextureName(int n) const
 int gameMap::getTerrainListPos(point3D p) const
 {
 	point3D b;
-	b.x = floor(p.x / CHUNK_SIZE);												   //AKESTA FUNCIO ES EL PUTO SIDA, I DEMOSTRA QUE HI HA MOLTA COSA A CANVIAR, MOLTISSIMA
+	b.x = floor(p.x / CHUNK_SIZE);
 	b.y = floor(p.y / CHUNK_SIZE);
 	b.z = floor(p.z / CHUNK_SIZE);
 	int chunkPosition = getChunkID(b);
 	if (chunkPosition == -1) {
-		cout << "NO S'HA TROBAT EL CHUNK" << endl;
+		HI::debugPrint("gM::gTLP No s ha trobat el chunk \n");
 	}
 	return terrainMap[chunkPosition][p.x - b.x * CHUNK_SIZE][p.y - b.y * CHUNK_SIZE][p.z - b.z * CHUNK_SIZE];
 }

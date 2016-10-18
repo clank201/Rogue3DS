@@ -20,7 +20,7 @@ private:
 	void freeTexture(string fileName);
 	void cameraUpdate();
 	void loadEntityTextures(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt);
-	HI::HITexture getTexture(point3D p, mode mode_t = PRRT) const;
+	HI::HITexture getTexture(point3D p) const;
 	HI::HITexture arrowTexture;
 	point3D cameraPos;
 public:

@@ -6,27 +6,25 @@
 
 using namespace std;
 
-graphicsSystem::graphicsSystem(gameMap* map, point3D* pos): playerPos(pos), mapObj(map), cameraPos(*pos)
-{
-	arrowTexture = HI::loadPngFile(HI::getDataPath()+"sprites/arrow.png");
+graphicsSystem::graphicsSystem(gameMap* map, point3D* pos) : playerPos(pos), mapObj(map), cameraPos(*pos) {
+	arrowTexture = HI::loadPngFile(HI::getDataPath() + "sprites/arrow.png");
 	reloadTextures();
 }
 
-graphicsSystem::~graphicsSystem()
-{
+graphicsSystem::~graphicsSystem() {
 	freeAllTextures();
 }
 
-void graphicsSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
-{
-		loadEntityTextures(es, events, dt);
-	drawFrame(es,events,dt);
+void graphicsSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) {
+	HI::debugPrint("Graphics \n");
+	loadEntityTextures(es, events, dt);
+	drawFrame(es, events, dt);
+	HI::debugPrint("END \n");
 }
 
 void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) {
 	cameraUpdate();
-	struct queueElement
-	{
+	struct queueElement {
 		point3D pos;
 		unsigned short spritePos;
 	};
@@ -35,31 +33,29 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 	entityx::ComponentHandle<FixedSprite> fixedSprite;
 	entityx::ComponentHandle<Position> position;
 
-	for (entityx::Entity entity : es.entities_with_components(position, fixedSprite))
-	{
+	for (entityx::Entity entity : es.entities_with_components(position, fixedSprite)) {
 		entityQueue[queueNumber].pos = position->currentPosition;
 		entityQueue[queueNumber].spritePos = fixedSprite->texPos;
 		queueNumber++;
 	}
 	HI::startFrame(HI::SCREEN_TOP);
 	point3D p;
-	for (int i = 0; i != HI::getScreenHeight()/16; i++) {
-		for (int j = 0; j != HI::getScreenWidth()/16; j++) {
+	for (int i = 0; i != HI::getScreenHeight() / 16; i++) {
+		for (int j = 0; j != HI::getScreenWidth() / 16; j++) {
 			for (int y = RENDER_HEIGHT; y >= 0; y--) {
-				p.x = (cameraPos.x + j) -(((HI::getScreenWidth() / 16)/2)-1);
+				p.x = (cameraPos.x + j) - (((HI::getScreenWidth() / 16) / 2) - 1);
 				p.y = (cameraPos.y + i) - (((HI::getScreenHeight() / 16) / 2) - 1);
 				p.z = (cameraPos.z - y);
-				//cout << "X " << p.x << " Y " << p.y << " Z " << p.z << endl;
 				if (p.x >= 0 && p.y >= 0 && p.z >= 0 && mapObj->isVisible(p)) {
-					HI::drawTexture(getTexture(p, TRRN), j * 16, i * 16);
+					//HI::debugPrint("	drawing " + mapObj->getTerrainName(p) + "\n");
+					HI::drawTexture(getTexture(p), j * 16, i * 16);
 					if (y > 1) HI::drawTextureRotate(arrowTexture, j * 16 + 8, i * 16 + 8, PI);
 					else if (y == 0) HI::drawTexture(arrowTexture, j * 16, i * 16);
 				}
-				for(int k = 0; k<queueNumber;k++)
-				{
-					if(entityQueue[k].pos.x == p.x && entityQueue[k].pos.y == p.y && entityQueue[k].pos.z == p.z)
-					{
-						HI::drawTexture(texTable[entityQueue[k].spritePos].texture, j * 16,i * 16);
+				for (int k = 0; k < queueNumber; k++) {
+					if (entityQueue[k].pos.x == p.x && entityQueue[k].pos.y == p.y && entityQueue[k].pos.z == p.z) {
+						//HI::debugPrint("	drawing " + texTable[entityQueue[k].spritePos].name + "\n");
+						HI::drawTexture(texTable[entityQueue[k].spritePos].texture, j * 16, i * 16);
 					}
 				}
 			}
@@ -68,12 +64,10 @@ void graphicsSystem::drawFrame(entityx::EntityManager& es, entityx::EventManager
 
 
 	HI::endFrame();
-
 	HI::swapBuffers();
 }
 
-bool graphicsSystem::isTextureLoaded(string textureFile) const
-{ // tells if a texture with said name is present on texTable
+bool graphicsSystem::isTextureLoaded(string textureFile) const { // tells if a texture with said name is present on texTable
 	for (int i = 0; i < TEX_TABLE_SIZE && texTable[i].name != ""; i++) {
 		if (texTable[i].name == textureFile) {
 			return true;
@@ -81,8 +75,7 @@ bool graphicsSystem::isTextureLoaded(string textureFile) const
 	}
 	return false;
 }
-int graphicsSystem::freeTexturePos() const
-{ //returns the position inside texTable[] of the first free texture space
+int graphicsSystem::freeTexturePos() const { //returns the position inside texTable[] of the first free texture space
 	for (int i = 0; i < TEX_TABLE_SIZE; i++) {
 		if (texTable[i].name == "") {
 			return i;
@@ -91,8 +84,7 @@ int graphicsSystem::freeTexturePos() const
 	//cout<< "NO FREE SPACE IN TEXTABLE" << endl;
 	return -1;
 }
-int graphicsSystem::getTexturePos(string fileName) const
-{ //returns the position inside texTable[] of the texture with said filename
+int graphicsSystem::getTexturePos(string fileName) const { //returns the position inside texTable[] of the texture with said filename
 	for (int i = 0; i < TEX_TABLE_SIZE && texTable[i].name != ""; i++) {
 		if (texTable[i].name == fileName) {
 			return i;
@@ -104,7 +96,7 @@ int graphicsSystem::getTexturePos(string fileName) const
 int graphicsSystem::loadTexture(string fileName) { //load a texture from a file into the first free space inside texTable[]
 	int freeTextureLoc = freeTexturePos();
 	texTable[freeTextureLoc].name = fileName;
-	fileName = HI::getDataPath()+"sprites/" + fileName;
+	fileName = HI::getDataPath() + "sprites/" + fileName;
 	texTable[freeTextureLoc].texture = HI::loadPngFile(fileName.c_str());
 	return freeTextureLoc;
 }
@@ -129,30 +121,25 @@ void graphicsSystem::freeAllTextures() {	 //frees all textures
 }
 
 
-void graphicsSystem::cameraUpdate()
-{
-	if (cameraPos.x - ((HI::getScreenWidth()/16)/5) < playerPos->x) { cameraPos.x++; }
-	if (cameraPos.x + (((HI::getScreenWidth() / 16) / 5)+1) > playerPos->x) { cameraPos.x--; }
+void graphicsSystem::cameraUpdate() {
+	if (cameraPos.x - ((HI::getScreenWidth() / 16) / 5) < playerPos->x) { cameraPos.x++; }
+	if (cameraPos.x + (((HI::getScreenWidth() / 16) / 5) + 1) > playerPos->x) { cameraPos.x--; }
 	if (cameraPos.y - ((HI::getScreenHeight() / 16) / 5) < playerPos->y) { cameraPos.y++; }
 	if (cameraPos.y + (((HI::getScreenHeight() / 16) / 5) + 1) > playerPos->y) { cameraPos.y--; }
-	cameraPos.z =playerPos->z;
+	cameraPos.z = playerPos->z;
 }
 
-void graphicsSystem::loadEntityTextures(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
-{
+void graphicsSystem::loadEntityTextures(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt) {
 	entityx::ComponentHandle<FixedSprite> FixedSprite;
-	for (entityx::Entity entity : es.entities_with_components(FixedSprite))
-	{
-		if(!FixedSprite->isLoaded)
-		{
+	for (entityx::Entity entity : es.entities_with_components(FixedSprite)) {
+		if (!FixedSprite->isLoaded) {
 			FixedSprite->isLoaded = true;
 			FixedSprite->texPos = loadTexture(FixedSprite->filename);
 		}
 	}
 }
 
-HI::HITexture graphicsSystem::getTexture(point3D p, mode mode_t) const
-{
+HI::HITexture graphicsSystem::getTexture(point3D p) const {
 
 	point3D b;
 	b.x = floor(p.x / CHUNK_SIZE);
@@ -160,18 +147,12 @@ HI::HITexture graphicsSystem::getTexture(point3D p, mode mode_t) const
 	b.z = floor(p.z / CHUNK_SIZE);
 
 	int chunkPosition = mapObj->getChunkID(b);
-	switch (mode_t) {
-	case TRRN:
-		if (chunkPosition == -1) {
-			getTexture(p, NTT);
-		}
+	if (chunkPosition != -1) {
 		if (mapObj->isVisible(p)) {
 			return texTable[getTexturePos(mapObj->getTerrainName(p))].texture;
 		}
-		break;
-	default:
-		break;
 	}
+	HI::debugPrint("ALLAH AKBAR\n");
 	return nullptr;
 }
 

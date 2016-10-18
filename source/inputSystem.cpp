@@ -6,6 +6,7 @@
 
 void inputSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
 {
+	HI::debugPrint("Input \n");
 	entityx::ComponentHandle<Velocity> velocity;
 	entityx::ComponentHandle<Player> player;
 	for (entityx::Entity entity : es.entities_with_components(player,velocity)){
@@ -30,6 +31,7 @@ void inputSystem::update(entityx::EntityManager& es, entityx::EventManager& even
 			velocity->currentVelocity.x=1;
 		}
 	}
+	HI::debugPrint("END \n");
 }
 
 inputSystem::~inputSystem()

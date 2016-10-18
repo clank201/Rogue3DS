@@ -7,6 +7,7 @@
 #include <psp2/display.h>
 #include <psp2shell.h>
 
+#define SCALE 1
 //#include <pthread.h>
 void HI::systemInit() {
 	vita2d_init();
@@ -56,15 +57,15 @@ HI::HITexture HI::loadBmpFile(std::string path) {
 }
 
 void HI::drawTexture(HI::HITexture texture, int posX, int posY) {
-	vita2d_draw_texture((vita2d_texture*)texture, posX, posY);
+	vita2d_draw_texture_scale((vita2d_texture*)texture, posX*SCALE, posY*SCALE, SCALE, SCALE);
 }
 
 void HI::drawTextureRotate(HI::HITexture texture, int posX, int posY, float angle) {
-	vita2d_draw_texture_rotate((vita2d_texture*)texture, posX, posY, angle);
+	vita2d_draw_texture_scale_rotate((vita2d_texture*)texture, posX*SCALE, posY*SCALE, SCALE, SCALE, angle);
 }
 
 void HI::drawTexturePart(HI::HITexture texture, int startX, int startY, int posX, int posY, int sizeX, int sizeY) {
-	vita2d_draw_texture_part((vita2d_texture*)texture, posX, posY, startX, startX, sizeX, sizeY);
+	vita2d_draw_texture_part_scale((vita2d_texture*)texture, posX*SCALE, posY*SCALE, startX, startX, sizeX, sizeY,SCALE,SCALE);
 }
 
 void HI::mergeTextures(HITexture origin, HITexture destination, short posX, short posY) {			  //BORKEN
@@ -78,7 +79,7 @@ void HI::freeTexture(HITexture texture) {
 	vita2d_free_texture((vita2d_texture*)texture);
 }
 HI::HITexture HI::createTexture(int sizeX, int sizeY) {
-	vita2d_create_empty_texture(sizeX, sizeY);
+	return vita2d_create_empty_texture(sizeX, sizeY);
 }
 
 void HI::endFrame() {
@@ -106,13 +107,14 @@ bool HardwareInterface::copyFile(std::string input, std::string output) { 		  //
 	oFile << iFile.rdbuf();
 	oFile.close();
 	iFile.close();
+	return true;
 }
 
 int HI::getScreenHeight() {
-	return 544;
+	return 544 / SCALE;
 }
 int HI::getScreenWidth() {
-	return 960;
+	return 960 / SCALE;
 }
 
 HardwareInterface::HI_CONSOLE HI::getConsole() {
@@ -140,7 +142,7 @@ int HI::getKeysHeld() {
 	memset(&pad, 0, sizeof(pad));
 	sceCtrlPeekBufferPositive(0, &pad, 1);
 	HI::HI_KEYS keys = HI_KEY_B;
-	if (pad.buttons & SCE_CTRL_DOWN) keys =(HI_KEYS) ((int)keys | HI::HI_KEY_DOWN);
+	if (pad.buttons & SCE_CTRL_DOWN) keys = (HI_KEYS)((int)keys | HI::HI_KEY_DOWN);
 	if (pad.buttons & SCE_CTRL_LEFT)keys = (HI_KEYS)((int)keys | HI::HI_KEY_LEFT);
 	if (pad.buttons & SCE_CTRL_RIGHT)keys = (HI_KEYS)((int)keys | HI::HI_KEY_RIGHT);
 	if (pad.buttons & SCE_CTRL_UP)keys = (HI_KEYS)((int)keys | HI::HI_KEY_UP);
@@ -181,8 +183,7 @@ void HI::dspChnWaveBufAdd(int id, HI::dspWaveBuf* buf) {	   		  //BORKEN
 void HI::DSP_FlushDataCache(const void* address, unsigned int size) {			  //BORKEN
 }
 
-void HardwareInterface::debugPrint(string s)
-{
+void HardwareInterface::debugPrint(string s) {
 	psp2shell_print(s.c_str());
 }
 
@@ -194,5 +195,6 @@ void HI::waitForVBlank() {
 }
 
 bool HI::aptMainLoop() {
+	return true;
 }
 #endif

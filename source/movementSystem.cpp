@@ -1,5 +1,6 @@
 #include "../include/movementSystem.h"
 #include "../include/components.h"
+#include "../include/HardwareInterface.h"
 
 movementSystem::~movementSystem()
 {
@@ -7,6 +8,7 @@ movementSystem::~movementSystem()
 
 void movementSystem::update(entityx::EntityManager& es, entityx::EventManager& events, entityx::TimeDelta dt)
 {
+	HI::debugPrint("Movement \n");
 	entityx::ComponentHandle<Position> position;
 	entityx::ComponentHandle<Velocity> velocity;
 	entityx::ComponentHandle<Player> player;
@@ -40,4 +42,5 @@ void movementSystem::update(entityx::EntityManager& es, entityx::EventManager& e
 	{
 		*player->pos = position->currentPosition;
 	}
+	HI::debugPrint("END \n");
 }
